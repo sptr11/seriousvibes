@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build
+.next/
+dist/
+build/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Tests
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Misc
+.turbo/
+.cache/
+
+*.tsbuildinfo
