@@ -21,6 +21,18 @@ node api/dist/index.js & cd web && npx next start -p $PORT -H 0.0.0.0
 - The API binds a fixed internal port (`API_PORT=3001`). Next.js proxies to it via rewrites.
 - `NODE_VERSION` is pinned in the service config, not assumed.
 
+**Never fall back to `process.env.PORT` in the API:**
+
+```ts
+// api/src/index.ts — correct
+const port = Number(process.env.API_PORT ?? 3001)
+
+// WRONG — caused a production outage
+const port = Number(process.env.API_PORT ?? process.env.PORT ?? 3001)
+```
+
+`PORT` is Render's dynamic external port, set for Next.js. If `API_PORT` is not in your env vars (it shouldn't need to be — 3001 is the right default), falling back to `PORT` causes the API to race Next.js for the same port. Next.js usually wins (it starts after migrate.js finishes), the API crashes with `EADDRINUSE`, and every proxy returns 500 while the container stays "healthy".
+
 **Port discipline:**
 
 ```ts
@@ -97,6 +109,8 @@ app.get('/health', c => c.json({ ok: true }))
 ```
 
 `yourapp.com/health` now reaches the API through Next.js. It only returns 200 if both Next.js and the API are running. Monitor this, not the root URL. The root URL returns 200 even when the API is dead.
+
+**Set `healthCheckPath=/health` on the Render service.** Without it, Render only watches whether Next.js is alive. If the API crashes (port conflict, uncaught exception), Next.js stays up, Render thinks the service is healthy, and the broken state persists until a manual restart. With `healthCheckPath=/health`, Render restarts the whole container automatically when the API goes down.
 
 ---
 
