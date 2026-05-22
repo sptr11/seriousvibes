@@ -86,6 +86,127 @@ Not bundled. Add `hono-rate-limiter` or put Cloudflare/Vercel in front. Login an
 
 A workspace can be `status = 'suspended'`. The auth middleware rejects requests for suspended workspaces with `403`. Use this for billing failures or abuse without deleting data.
 
+## Role-gated UI
+
+**API-level RBAC is not enough.** If a member can see a button, they'll click it. Getting a 403 in the UI is a broken experience, not a security measure.
+
+Derive a single role flag once, close to the top of the component:
+
+```ts
+const myRole = members.find(m => m.email === user?.email)?.role
+const isOwnerOrAdmin = myRole === 'owner' || myRole === 'admin'
+```
+
+Then use it to branch the UI — don't repeat the check:
+
+```tsx
+{isOwnerOrAdmin ? (
+  <button onClick={saveWorkspace}>save changes</button>
+) : (
+  <p className="text-muted">only owners and admins can change workspace settings.</p>
+)}
+```
+
+For inputs that show current state but shouldn't be editable:
+
+```tsx
+<Input
+  value={workspaceName}
+  onChange={e => setWorkspaceName(e.target.value)}
+  disabled={!isOwnerOrAdmin}
+/>
+```
+
+The pattern: members see the values (useful info), can't change them, and get a clear explanation — not a silent 403.
+
+**What to gate:**
+- Workspace name/handle edits
+- Domain auto-join toggle
+- Member invite and remove
+- Data export
+- API key creation for others
+- Any destructive action
+
+The API must still enforce these. UI gating is for UX; API enforcement is for security. Both are required.
+
+## Third-party auth (WorkOS)
+
+Rolling your own auth (bcrypt + JWT, as this starter ships) is correct for prototypes. For production, replace it with a managed provider once you have real users.
+
+**Why:** Password reset, email deliverability, magic links, OAuth providers, MFA, brute-force protection, and session management are solved problems. They are not your differentiator. Getting any one of them wrong costs you users and possibly a breach.
+
+**WorkOS** handles credential storage, email delivery, and OAuth. Your JWT and refresh token system stays unchanged — WorkOS is just the credential verification layer. The integration point is a single `issueSession()` function that WorkOS calls after verifying credentials, and you create-or-update the user in your DB and issue your own tokens.
+
+```ts
+// workos verifies → you issue
+async function issueSession(workosUser: { id: string; email: string }) {
+  const user = await upsertUser(workosUser)
+  const accessToken = await signAccessToken(user.id)
+  c.header('Set-Cookie', refreshCookie(raw))
+  return c.json({ token: accessToken, user, workspaces })
+}
+```
+
+Your downstream code never changes — it still gets a JWT and a refresh cookie.
+
+**Auto-join by domain:** When a new user signs up with a business email (e.g. `@acme.com`), automatically join them to the team workspace:
+
+```ts
+const domain = domainFromEmail(email)
+if (domain) {
+  await pool.query(
+    `INSERT INTO memberships (user_id, workspace_id, role)
+     SELECT $1, w.id, 'member' FROM workspaces w
+     WHERE w.auto_join_domain = $2
+     ON CONFLICT DO NOTHING`,
+    [newUser.id, domain]
+  )
+}
+```
+
+Do this synchronously, before returning the auth response, so the team workspace is in the first response and becomes the default.
+
+Exclude consumer email domains (gmail, yahoo, outlook, etc.) from auto-join. Maintain a list in `lib/consumer-domains.ts`.
+
+## Frontend auth resilience
+
+**The client must recover from token expiry without the user noticing.**
+
+Wrap every authenticated API call in a retry loop:
+
+```ts
+async function authedFetch(path: string, opts?: RequestInit) {
+  let res = await fetch(path, { ...opts, headers: authHeaders() })
+  if (res.status === 401) {
+    const refreshed = await tryRefresh()
+    if (!refreshed) {
+      clearSession()
+      router.push('/login')
+      return res
+    }
+    res = await fetch(path, { ...opts, headers: authHeaders() }) // retry once
+  }
+  return res
+}
+```
+
+**Boot from cache, not from the network.** Hydrate the auth state from `localStorage` on mount — the user sees the correct UI immediately:
+
+```ts
+const stored = localStorage.getItem('user')
+if (stored) setState({ user: JSON.parse(stored), loading: false })
+```
+
+Then validate the token in the background. If it's expired, the first `authedFetch` call triggers the refresh loop above.
+
+**Workspace fallback.** If the stored workspace ID no longer exists (deleted, removed from membership), fall back to the first available workspace rather than crashing:
+
+```ts
+const active = workspaces.find(w => w.id === storedId) ?? workspaces[0] ?? null
+```
+
+**Don't assume `localStorage` is available.** Private browsing in some browsers throws on storage access. Wrap all reads and writes in try/catch.
+
 ## What this starter does NOT include
 
 - **2FA.** Add it after PMF if you need it.

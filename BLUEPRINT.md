@@ -72,10 +72,11 @@ Skip any step and you'll redo work in every step after it.
 
 ## Phase 6 — Operations
 
-**Output:** admin tooling, pricing, metering, team management.
+**Output:** admin tooling, pricing, metering, team management — and production infrastructure that holds under real use.
 
-- Build when you have users who need it. Not before.
+- Build operations tooling when you have users who need it. Not before.
 - Pluck built suspend/delete, usage tracking, and a tabbed admin dashboard in week six. We had four total users. None of them needed any of it.
+- **Do** set up deployment infrastructure at Phase 6. Not monitoring in the abstract — a specific health endpoint, a specific uptime check, a specific alert. Read [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) before shipping Phase 4 to real users.
 
 ## Anti-patterns (things we did, you shouldn't)
 

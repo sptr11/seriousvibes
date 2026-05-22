@@ -5,7 +5,8 @@ You are working in a project bootstrapped from **seriousvibes**, a starter that 
 ## Read these before writing code
 
 - **[`BLUEPRINT.md`](./BLUEPRINT.md)** — the build sequence. Know which phase you're in. Don't skip ahead.
-- **[`docs/SECURITY.md`](./docs/SECURITY.md)** — auth, scoping, input validation, secrets.
+- **[`docs/SECURITY.md`](./docs/SECURITY.md)** — auth, scoping, input validation, role-gated UI, frontend resilience.
+- **[`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)** — single-service pattern, migration resilience, health endpoint, monitoring, env vars.
 - **[`docs/TESTING.md`](./docs/TESTING.md)** — TDD pattern, vitest setup, e2e flow.
 - **[`docs/COPY_GUIDE.md`](./docs/COPY_GUIDE.md)** — voice, banned words, error message patterns.
 - **[`docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md)** — tokens, components, when to add variants.
