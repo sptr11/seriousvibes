@@ -22,6 +22,18 @@ The default is a light, high-contrast palette with colorful accents. Swap the to
 - `--color-muted` — dark secondary text (readable against the light background)
 - `--color-rule` — visible borders and dividers
 
+## Typography — not a token, unlike color
+
+The font pairing is a deliberate signature, not a swappable value: **Geist** for body/UI text, **Geist Mono** for labels (`.t-mono`), and **Instrument Serif italic** for emphasis words inside headlines (`font-serif italic` — see the homepage `h1`). Sans body + italic-serif accent is the one visual choice in this system that isn't behind a CSS variable.
+
+That means it doesn't follow the "change one line in `globals.css`" promise above. To replace it:
+
+1. Swap the `next/font/google` imports in `web/src/app/layout.tsx` (currently `Geist`, `Geist_Mono`, `Instrument_Serif`).
+2. Update the `fontFamily` mapping in `tailwind.config.ts` if the CSS variable names change.
+3. Grep for `font-serif italic` — every place a headline mixes in the serif accent has that class hardcoded, not a token, so each one needs a look.
+
+If you keep the palette but want a plainer type system, cutting the serif import and the `font-serif italic` spans is the fastest way to de-signature this without touching color tokens.
+
 ## Adding to the system
 
 The pattern is: **token first, then class, then variant**.
@@ -42,7 +54,7 @@ All from shadcn/ui, customized via CVA. Each lives in `web/src/components/ui/`.
 
 Bundled:
 - `Button` — variants: `primary`, `outline`, `ghost`, `destructive`
-- `Card` — variants: `flat`, `raised`, `stamp`
+- `Card` — variants: `flat`, `raised`, `stamp` (`stamp` — a solid `--color-fg` border plus a coral-tinted ring shadow via `--shadow-stamp` — is the app's default look for prominent cards: login, dashboard, homepage tiles. It's a signature, not a neutral container. Use `flat` or `raised` if you want the card itself to stay out of the way.)
 - `Input`, `Label`, `Textarea`
 - `Badge` — variants: `default`, `accent`, `pos`, `neg`, `quiet`
 - `Dialog`, `Dropdown`
