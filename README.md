@@ -35,7 +35,7 @@ npm run typecheck     # tsc --noEmit everywhere
 
 ## The philosophy
 
-**Sequence matters more than quality.** Pluck (the project this distills lessons from) shipped a beautiful design system, then discovered it broke the live form renderer. Wrote 40 use cases, then realized none of them mentioned the differentiator. Built admin tooling before the core product worked end-to-end. Each piece was good; the order was expensive.
+**Sequence matters more than quality.** We've seen projects ship a beautiful design system, then discover it broke the live renderer. Write 40 use cases, then realize none of them mention the differentiator. Build admin tooling before the core product works end-to-end. Each piece was good; the order was expensive.
 
 The cheap ordering — positioning → differentiator → tokens + copy guide → core loop → content — is what this starter encodes.
 
@@ -59,7 +59,7 @@ The cheap ordering — positioning → differentiator → tokens + copy guide �
 
 ## License
 
-Will be MIT once stable. Private during iteration.
+MIT
 
 ---
 

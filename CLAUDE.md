@@ -2,6 +2,8 @@
 
 You are working in a project bootstrapped from **seriousvibes**, a starter that bakes in security, testing, design tokens, and copy conventions so vibe-coded products don't accumulate churn.
 
+> If you forked this repo from a workspace that has its own root-level `CLAUDE.md` cascade (voice, workflow, architecture, copy, logging principles), that cascade takes precedence — treat everything below as seriousvibes-specific defaults, not the final word.
+
 ## Read these before writing code
 
 - **[`BLUEPRINT.md`](./BLUEPRINT.md)** — the build sequence. Know which phase you're in. Don't skip ahead.
@@ -47,6 +49,10 @@ cp .env.example .env  # set DATABASE_URL, JWT_SECRET
 npm run migrate -w api
 npm run dev           # api: 3001, web: 3000
 ```
+
+## Session logging
+
+**Append to [`docs/ITERATIONS.md`](./docs/ITERATIONS.md)** after every non-trivial change: what changed, why, and what a future session needs to know.
 
 ## When in doubt
 

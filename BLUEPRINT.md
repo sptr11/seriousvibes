@@ -39,7 +39,7 @@ Skip any step and you'll redo work in every step after it.
 
 - Build this *before* anything else, including auth, if you can fake the rest.
 - Test it on a real person. If they don't see the difference, the positioning is wrong — back to Phase 1.
-- Pluck shipped 40 use case pages, 7 comparison pages, and a blog before probes (the differentiator) existed. Every page had to be rewritten after.
+- A real project shipped 40 use case pages, 7 comparison pages, and a blog before the differentiator existed. Every page had to be rewritten after.
 
 ## Phase 3 — Tokens, copy guide, CLAUDE.md
 
@@ -49,7 +49,7 @@ Skip any step and you'll redo work in every step after it.
 - **Copy guide** (`COPY_GUIDE.md`) — voice, tone, banned words, AI-overclaiming rules, error message patterns. Every piece of UI text references it.
 - **CLAUDE.md** (root + per-package) — stack decisions, conventions, where to find docs. AI agents read this before they write.
 
-**Why now, not later?** Because everything you write between now and "later" gets retrofitted. Pluck did the audit-everything pass — banned words removed, AI overclaiming corrected, error messages made specific — across 38 surfaces. Hundreds of edits. Could have been zero.
+**Why now, not later?** Because everything you write between now and "later" gets retrofitted. One project did the audit-everything pass — banned words removed, AI overclaiming corrected, error messages made specific — across 38 surfaces. Hundreds of edits. Could have been zero.
 
 ## Phase 4 — Core loop (end-to-end, in real users' hands)
 
@@ -58,7 +58,7 @@ Skip any step and you'll redo work in every step after it.
 - Build the *minimum* path. If it's a form product, that's create → share → fill → see response. Not auth flows, not settings, not pricing.
 - Test with TDD from the first endpoint. Cost is near-zero now, infinite later.
 - Show it to two users. If they're confused, fix the loop, not the marketing.
-- Pluck users found that AI agents were just showing empty forms — the core loop was broken. We learned this from real users in week three. We could have learned it in week one.
+- Real users found the core loop was broken — AI agents were just showing empty forms. Discovered in week three. Could have been week one.
 
 **Don't:** build admin pages, comparison pages, blog posts, pricing. None of those help you find PMF.
 
@@ -68,14 +68,14 @@ Skip any step and you'll redo work in every step after it.
 
 - Now that positioning is locked, the differentiator works, and the product has real users — write the content.
 - Use the copy guide. AI agents will produce mush if you let them. Constrain them.
-- Lead with the differentiator. Pluck's landing page used to lead with "AI can fill it" — generic. The probes-led version is specific.
+- Lead with the differentiator. A landing page that leads with "AI can fill it" is generic. One that leads with the specific mechanism is not.
 
 ## Phase 6 — Operations
 
 **Output:** admin tooling, pricing, metering, team management — and production infrastructure that holds under real use.
 
 - Build operations tooling when you have users who need it. Not before.
-- Pluck built suspend/delete, usage tracking, and a tabbed admin dashboard in week six. We had four total users. None of them needed any of it.
+- One project built suspend/delete, usage tracking, and a tabbed admin dashboard in week six. Four total users. None of them needed any of it.
 - **Do** set up deployment infrastructure at Phase 6. Not monitoring in the abstract — a specific health endpoint, a specific uptime check, a specific alert. Read [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) before shipping Phase 4 to real users.
 
 ## Anti-patterns (things we did, you shouldn't)
