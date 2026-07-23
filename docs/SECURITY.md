@@ -149,7 +149,7 @@ async function issueSession(workosUser: { id: string; email: string }) {
 
 Your downstream code never changes — it still gets a JWT and a refresh cookie.
 
-**Auto-join by domain:** When a new user signs up with a business email (e.g. `@acme.com`), automatically join them to the team workspace:
+**Pattern: auto-join by domain (not included by default).** When a new user signs up with a business email (e.g. `@acme.com`), you can automatically join them to the team workspace. This requires adding an `auto_join_domain` column to the `workspaces` table and a consumer-domain exclusion list:
 
 ```ts
 const domain = domainFromEmail(email)
@@ -164,9 +164,7 @@ if (domain) {
 }
 ```
 
-Do this synchronously, before returning the auth response, so the team workspace is in the first response and becomes the default.
-
-Exclude consumer email domains (gmail, yahoo, outlook, etc.) from auto-join. Maintain a list in `lib/consumer-domains.ts`.
+Do this synchronously, before returning the auth response, so the team workspace is in the first response and becomes the default. Exclude consumer email domains (gmail, yahoo, outlook, etc.) from auto-join.
 
 ## Frontend auth resilience
 

@@ -17,10 +17,8 @@ import { app } from '../index.js'
 import { signAccessToken } from '../auth/jwt.js'
 import * as dbModule from '../db/client.js'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockQuery = (dbModule.pool.query as any) as ReturnType<typeof vi.fn>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const clientQuery = (dbModule as any).__clientQuery as ReturnType<typeof vi.fn>
+const mockQuery = (dbModule.pool.query as unknown) as ReturnType<typeof vi.fn>
+const clientQuery = (dbModule as unknown as { __clientQuery: ReturnType<typeof vi.fn> }).__clientQuery
 
 beforeEach(() => {
   mockQuery.mockReset()

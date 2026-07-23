@@ -72,7 +72,7 @@ For every test of "it works," write one of "it correctly refuses":
 - Missing required field? `400` with field name.
 - Suspended workspace? `403`.
 
-Pluck shipped several bugs where the happy path was tested and the failure path wasn't. The most expensive was a slug lookup that didn't include `workspace_id` — happy path passed because there was only one workspace.
+We've shipped bugs where the happy path was tested and the failure path wasn't. The most expensive was a slug lookup that didn't include `workspace_id` — happy path passed because there was only one workspace.
 
 ## Playwright (E2E)
 
@@ -130,15 +130,24 @@ The `.github/workflows/ci.yml` runs:
 3. `npm test`
 4. `npm run lint`
 
-E2E is opt-in (set `RUN_E2E=1` in the workflow), since it needs a database.
+E2E is not included in the default workflow — add a separate job with a database service container when you need it.
 
-## Pre-commit
+## Pre-commit (optional)
 
-Use `husky` + `lint-staged` (already configured). On commit:
+Add `husky` + `lint-staged` when you want pre-commit enforcement:
 
-- ESLint on changed files.
-- Type-check (fast — only changed package).
-- Run tests for the changed package.
+```bash
+npm install -D husky lint-staged
+npx husky init
+```
+
+Suggested lint-staged config in `package.json`:
+
+```json
+"lint-staged": {
+  "*.{ts,tsx}": ["eslint --fix", "tsc-files --noEmit"]
+}
+```
 
 If pre-commit fails, fix it. Don't `--no-verify`.
 

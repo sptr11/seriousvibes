@@ -21,10 +21,8 @@ vi.mock('../auth/passwords.js', () => ({
 import { app } from '../index.js'
 import * as dbModule from '../db/client.js'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockQuery = (dbModule.pool.query as any) as ReturnType<typeof vi.fn>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const clientQuery = (dbModule as any).__clientQuery as ReturnType<typeof vi.fn>
+const mockQuery = (dbModule.pool.query as unknown) as ReturnType<typeof vi.fn>
+const clientQuery = (dbModule as unknown as { __clientQuery: ReturnType<typeof vi.fn> }).__clientQuery
 
 beforeEach(() => {
   mockQuery.mockReset()
@@ -138,10 +136,8 @@ describe('POST /api/auth/login', () => {
 
 describe('POST /api/auth/refresh', () => {
   it('rotates refresh token and returns new access token', async () => {
-    const future = new Date(Date.now() + 86400_000).toISOString()
     mockQuery
-      .mockResolvedValueOnce({ rows: [{ id: 'rt_1', user_id: 'u_1', expires_at: future }] }) // find token
-      .mockResolvedValueOnce({}) // delete old
+      .mockResolvedValueOnce({ rows: [{ id: 'rt_1', user_id: 'u_1' }] }) // atomic delete
       .mockResolvedValueOnce({}) // insert new
 
     const res = await app.request('/api/auth/refresh', {
@@ -159,10 +155,8 @@ describe('POST /api/auth/refresh', () => {
   })
 
   it('rejects expired token (401)', async () => {
-    const past = new Date(Date.now() - 86400_000).toISOString()
-    mockQuery
-      .mockResolvedValueOnce({ rows: [{ id: 'rt_1', user_id: 'u_1', expires_at: past }] })
-      .mockResolvedValueOnce({}) // delete
+    // Atomic DELETE WHERE expires_at > NOW() returns no rows for expired tokens
+    mockQuery.mockResolvedValueOnce({ rows: [] })
 
     const res = await app.request('/api/auth/refresh', {
       method: 'POST',

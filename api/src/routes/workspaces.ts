@@ -295,6 +295,33 @@ workspaces.post('/:id/members', async c => {
   return c.json({ ok: true }, 201)
 })
 
+// GET /api/workspaces/:id/api-key
+workspaces.get('/:id/api-key', async c => {
+  const user = c.get('user')
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const id = c.req.param('id')
+
+  const memResult = (await pool.query(
+    `SELECT m.role, w.id AS workspace_id
+     FROM memberships m
+     JOIN workspaces w ON w.id = m.workspace_id
+     WHERE m.user_id = $1 AND (w.id = $2 OR w.handle = $2) LIMIT 1`,
+    [user.id, id],
+  )) as unknown as { rows: Array<{ role: Role; workspace_id: string }> }
+
+  const mem = memResult.rows[0]
+  if (!mem) return c.json({ error: 'Workspace not found' }, 404)
+  if (!canManage(mem.role)) return c.json({ error: 'Forbidden' }, 403)
+
+  const result = (await pool.query(
+    `SELECT key FROM api_keys WHERE workspace_id = $1 ORDER BY created_at ASC LIMIT 1`,
+    [mem.workspace_id],
+  )) as unknown as { rows: Array<{ key: string }> }
+
+  const row = result.rows[0]
+  return c.json({ key: row?.key ?? null })
+})
+
 // DELETE /api/workspaces/:id/members/:user_id
 workspaces.delete('/:id/members/:user_id', async c => {
   const user = c.get('user')
@@ -314,12 +341,17 @@ workspaces.delete('/:id/members/:user_id', async c => {
   if (!mem) return c.json({ error: 'Workspace not found' }, 404)
   if (!canManage(mem.role)) return c.json({ error: 'Forbidden' }, 403)
 
-  if (targetUserId === user.id) {
+  const targetMem = (await pool.query(
+    `SELECT role FROM memberships WHERE workspace_id = $1 AND user_id = $2`,
+    [mem.workspace_id, targetUserId],
+  )) as unknown as { rows: Array<{ role: Role }> }
+
+  if (targetMem.rows[0]?.role === 'owner') {
     const owners = (await pool.query(
       `SELECT COUNT(*)::int AS n FROM memberships WHERE workspace_id = $1 AND role = 'owner'`,
       [mem.workspace_id],
     )) as unknown as { rows: Array<{ n: number }> }
-    if ((owners.rows[0]?.n ?? 0) <= 1 && mem.role === 'owner') {
+    if ((owners.rows[0]?.n ?? 0) <= 1) {
       return c.json({ error: 'Cannot remove the last owner' }, 400)
     }
   }

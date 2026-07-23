@@ -1,4 +1,5 @@
 import { pool } from './client.js'
+import { log } from '../lib/logger.js'
 
 const DEFAULT_SECRET = 'change-me-to-a-32-byte-random-string'
 
@@ -58,18 +59,18 @@ async function run(): Promise<void> {
   if (process.env.NODE_ENV === 'production') {
     const secret = process.env.JWT_SECRET
     if (!secret || secret === DEFAULT_SECRET) {
-      console.error('[migrate] refusing to run in production with default or missing JWT_SECRET')
+      log.error('refusing to run in production with default or missing JWT_SECRET')
       process.exit(1)
     }
   }
 
-  console.log('[migrate] running migrations...')
+  log.info('running migrations')
   await pool.query(SQL)
-  console.log('[migrate] done')
+  log.info('migrations complete')
   await pool.end()
 }
 
 run().catch(err => {
-  console.error('[migrate] failed:', err instanceof Error ? err.message : err)
+  log.error('migration failed', { message: err instanceof Error ? err.message : String(err) })
   process.exit(1)
 })

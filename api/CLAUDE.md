@@ -51,7 +51,7 @@ For routes that use `pool.connect()` (signup, workspace create), mock the return
 ## Conventions / choices
 
 - **Handle validation:** 3–30 chars, lowercase alphanumeric + `-`/`_`, must start with alphanumeric. Reserved: `admin, api, www, root, settings`.
-- **X-Workspace header** accepts either workspace ID or handle. Matches the Pluck convention.
+- **X-Workspace header** accepts either workspace ID or handle.
 - **Signup is transactional** — single `BEGIN/COMMIT` around user + workspace + membership + api key + refresh token inserts.
 - **`memberships` lookup** is always filtered by `user_id` first. Never resolve a workspace without the membership join.
 - **Migrations** refuse to run in `NODE_ENV=production` with the default `.env.example` `JWT_SECRET`.
@@ -69,6 +69,7 @@ src/
   auth/refresh.ts       generate/hash/cookie helpers
   middleware/auth.ts    requireAuth (JWT + API key paths)
   lib/handle.ts         isValidHandle + reserved list
-  routes/auth.ts        signup, login, refresh, logout, me
-  routes/workspaces.ts  CRUD + members
+  lib/logger.ts         structured logger (JSON in prod, readable in dev)
+  routes/auth.ts        signup, login, refresh, logout, me, profile update
+  routes/workspaces.ts  CRUD + members + api-key
 ```

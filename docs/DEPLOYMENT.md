@@ -62,20 +62,20 @@ Fix 1 — run migrations inside the API startup, not before it:
 ```ts
 // api/src/index.ts
 if (!isTest) {
-  import('./db/migrate-run.js')
+  import('./db/migrate.js')
     .catch(err => {
-      console.error('[api] migration failed, starting anyway:', err.message)
+      log.error('migration failed, starting anyway', { message: err.message })
     })
     .finally(() => {
       const port = Number(process.env.API_PORT ?? 3001)
       serve({ fetch: app.fetch, port }, info => {
-        console.log(`[api] listening on http://localhost:${info.port}`)
+        log.info(`listening on http://localhost:${info.port}`, { port: info.port })
       })
     })
 }
 ```
 
-Fix 2 — if you keep a standalone `migrate.js`, make it exit 0 on failure:
+Fix 2 — if you keep the standalone migration script (`npm run migrate`), make it exit 0 on failure:
 
 ```ts
 // migrate.ts
@@ -135,9 +135,9 @@ Set the alert threshold to 2–3 consecutive failures before paging. One failure
 | `NEXT_PUBLIC_API_BASE_URL` | Render env | `http://localhost:3001` for co-located deployments. Used only in `next.config.ts` rewrites. |
 | `CORS_ORIGIN` | Render env | Comma-separated list of allowed origins. Must include the production URL. |
 
-`render.yaml` is source-of-truth for build/start commands and non-secret env vars. Secret env vars use `sync: false` — they're set once in the dashboard and never overwritten by YAML deploys.
+If you deploy to Render, create a `render.yaml` as source-of-truth for build/start commands and non-secret env vars. Secret env vars use `sync: false` — they're set once in the dashboard and never overwritten by YAML deploys.
 
-**Render YAML does not update an existing service's start command.** If you change `startCommand` in `render.yaml` on an existing service, it has no effect. Update it via the dashboard or the API (`PATCH /v1/services/:id` with `envSpecificDetails.startCommand`). Keep `render.yaml` accurate anyway — it documents intent and bootstraps new environments.
+**Note:** Render YAML does not update an existing service's start command. If you change `startCommand` in `render.yaml` on an existing service, update it via the dashboard too.
 
 ---
 
@@ -154,7 +154,7 @@ Set the alert threshold to 2–3 consecutive failures before paging. One failure
 
 - [ ] `npm run typecheck` passes in both packages.
 - [ ] `npm test` passes.
-- [ ] `render.yaml` build/start commands match what's in the dashboard.
+- [ ] Service build/start commands match what's in the dashboard.
 - [ ] `NEXT_PUBLIC_` variables contain no secrets.
 - [ ] `CORS_ORIGIN` includes the production domain.
 - [ ] Health endpoint returns 200 after deploy.

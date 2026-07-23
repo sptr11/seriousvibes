@@ -171,23 +171,17 @@ auth.post('/refresh', async c => {
   if (!raw) return c.json({ error: 'No refresh token' }, 401)
   const hash = hashRefreshToken(raw)
 
+  // Atomic delete-and-check: only one concurrent request can consume a token
   const result = (await pool.query(
-    `SELECT id, user_id, expires_at FROM refresh_tokens WHERE token_hash = $1`,
+    `DELETE FROM refresh_tokens WHERE token_hash = $1 AND expires_at > NOW()
+     RETURNING id, user_id`,
     [hash],
   )) as unknown as {
-    rows: Array<{ id: string; user_id: string; expires_at: string }>
+    rows: Array<{ id: string; user_id: string }>
   }
 
   const row = result.rows[0]
-  if (!row) return c.json({ error: 'Invalid refresh token' }, 401)
-
-  const exp = new Date(row.expires_at).getTime()
-  if (Number.isNaN(exp) || exp <= Date.now()) {
-    await pool.query('DELETE FROM refresh_tokens WHERE id = $1', [row.id])
-    return c.json({ error: 'Refresh token expired' }, 401)
-  }
-
-  await pool.query('DELETE FROM refresh_tokens WHERE id = $1', [row.id])
+  if (!row) return c.json({ error: 'Invalid or expired refresh token' }, 401)
   const { raw: newRaw, hash: newHash } = generateRefreshToken()
   const newId = `rt_${randomBytes(8).toString('hex')}`
   await pool.query(
@@ -209,6 +203,46 @@ auth.post('/logout', async c => {
   }
   c.header('Set-Cookie', clearRefreshCookie())
   return c.json({ ok: true })
+})
+
+const UpdateProfileSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  email: z.string().email().max(254).optional(),
+})
+
+auth.patch('/me', requireAuth, async c => {
+  const user = c.get('user')
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+
+  const parsed = UpdateProfileSchema.safeParse(await c.req.json().catch(() => null))
+  if (!parsed.success) {
+    return c.json({ error: 'Invalid input', details: parsed.error.flatten() }, 400)
+  }
+  const { name, email } = parsed.data
+  if (!name && !email) return c.json({ error: 'Nothing to update' }, 400)
+
+  const fields: string[] = []
+  const values: unknown[] = []
+  let i = 1
+  if (name) { fields.push(`name = $${i++}`); values.push(name) }
+  if (email) { fields.push(`email = $${i++}`); values.push(email.toLowerCase()) }
+  values.push(user.id)
+
+  try {
+    const result = (await pool.query(
+      `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING id, email, name`,
+      values,
+    )) as unknown as { rows: Array<{ id: string; email: string; name: string }> }
+    const row = result.rows[0]
+    if (!row) return c.json({ error: 'User not found' }, 404)
+    return c.json({ user: row })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (/duplicate key|unique constraint/i.test(msg)) {
+      return c.json({ error: 'Email already in use' }, 409)
+    }
+    return c.json({ error: 'Update failed' }, 500)
+  }
 })
 
 auth.get('/me', requireAuth, async c => {
