@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useAuth } from '@/lib/use-auth'
@@ -20,14 +20,15 @@ export default function DashboardHome() {
       <Card variant="stamp">
         <CardContent className="flex flex-col items-start gap-4 p-8">
           <div>
-            <h2 className="t-h3">no items yet</h2>
+            <h2 className="t-h3">this is a starter, not a product yet</h2>
             <p className="t-body mt-1 text-muted">
-              this is where your work lives. create the first one to see it here.
+              auth and workspaces are wired up. grab your api key, invite your team, or start
+              building the thing this workspace is actually for.
             </p>
           </div>
           <Button asChild variant="primary">
             <Link href="/dashboard/settings">
-              <Plus className="h-4 w-4" /> create your first item
+              go to settings <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </CardContent>

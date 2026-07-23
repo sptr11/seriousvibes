@@ -54,11 +54,6 @@ export default function LandingPage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="lg">
-            <a href="https://github.com/sptr11/seriousvibes/blob/main/BLUEPRINT.md">
-              read the blueprint
-            </a>
-          </Button>
         </div>
       </section>
 
