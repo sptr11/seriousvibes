@@ -40,7 +40,7 @@ export default function LandingPage() {
           </Badge>
           <h1 className="t-display max-w-3xl font-medium">
             ship the thing.{' '}
-            <span className="font-serif italic">skip the rework.</span>
+            <span className="t-emphasis">skip the rework.</span>
           </h1>
         </div>
         <p className="t-body max-w-2xl text-muted">

@@ -22,17 +22,15 @@ The default is a light, high-contrast palette with colorful accents. Swap the to
 - `--color-muted` — dark secondary text (readable against the light background)
 - `--color-rule` — visible borders and dividers
 
-## Typography — not a token, unlike color
+## Typography
 
-The font pairing is a deliberate signature, not a swappable value: **Geist** for body/UI text, **Geist Mono** for labels (`.t-mono`), and **Instrument Serif italic** for emphasis words inside headlines (`font-serif italic` — see the homepage `h1`). Sans body + italic-serif accent is the one visual choice in this system that isn't behind a CSS variable.
+Sans body (`Geist`) + mono labels (`Geist Mono`, via `.t-mono`) + italic-serif emphasis (`Instrument Serif`, via `.t-emphasis`) is the default signature. The emphasis *treatment* is tokenized like everything else — `.t-emphasis` lives in `globals.css` next to `.t-display`/`.t-h1`/`.t-mono`, so redefining that one rule (e.g. to bold sans instead of italic serif) changes every headline that uses it. Use the class, never hardcode `font-serif italic` in JSX.
 
-That means it doesn't follow the "change one line in `globals.css`" promise above. To replace it:
+What isn't a one-line change: swapping which font *families* are loaded. That's a Next.js constraint, not a design-system gap — `next/font/google` fonts are wired up at build time in `web/src/app/layout.tsx` (currently `Geist`, `Geist_Mono`, `Instrument_Serif`), and the `fontFamily` mapping in `tailwind.config.ts` points at the CSS variables those imports produce. To load a different typeface:
 
-1. Swap the `next/font/google` imports in `web/src/app/layout.tsx` (currently `Geist`, `Geist_Mono`, `Instrument_Serif`).
-2. Update the `fontFamily` mapping in `tailwind.config.ts` if the CSS variable names change.
-3. Grep for `font-serif italic` — every place a headline mixes in the serif accent has that class hardcoded, not a token, so each one needs a look.
-
-If you keep the palette but want a plainer type system, cutting the serif import and the `font-serif italic` spans is the fastest way to de-signature this without touching color tokens.
+1. Swap the `next/font/google` imports in `layout.tsx`.
+2. Update `tailwind.config.ts` if the CSS variable names change.
+3. `.t-mono` and `.t-emphasis` in `globals.css` already reference the variables, not literal font names — they pick up the swap automatically.
 
 ## Adding to the system
 

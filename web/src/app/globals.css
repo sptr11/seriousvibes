@@ -96,6 +96,14 @@
     letter-spacing: 0.06em;
   }
 
+  /* Emphasis treatment for accent words inside headlines. Default is the
+     sans+italic-serif signature; redefine this one rule to change it
+     everywhere instead of hunting for `font-serif italic` in JSX. */
+  .t-emphasis {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-style: italic;
+  }
+
   .sig-shadow {
     box-shadow: var(--shadow-stamp);
   }
