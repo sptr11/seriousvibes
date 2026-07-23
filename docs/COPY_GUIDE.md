@@ -8,23 +8,25 @@ Customize this file for your product, then reference it from `CLAUDE.md` so AI a
 
 Pick three adjectives. Make them load-bearing.
 
-Example (Pluck's): **specific, dry, confident**.
+Example: **specific, direct, fun**.
 
 - Specific: "Couldn't send the link" beats "Something went wrong."
 - Dry: No exclamation points. No "Awesome!", "Great!", "Woohoo!".
 - Confident: State the fact, don't soften it. "This will delete 12 forms" not "Are you sure you want to delete these forms?"
 
-## Nine rules
+## Eleven rules
 
-1. **State the fact.** "12 forms deleted." Not "12 forms have been successfully deleted."
-2. **One specific thing per sentence.** Cut everything else.
-3. **No "AI" in the headline.** If your product needs AI in the headline to sell, the headline is doing the wrong job.
-4. **Lowercase nouns.** "dashboard", "form", "workspace" — not "Dashboard", "Form", "Workspace".
-5. **No exclamation points.** Ever. Including "Welcome!"
-6. **Address one person.** "Your" not "Users'". "You can" not "Teams can".
-7. **Don't market features. Sell outcomes.** "Get answers worth reading" beats "AI-powered surveys with smart probing."
-8. **Specific examples over abstract benefits.** "Used by SRE teams running blameless postmortems" beats "trusted by teams."
-9. **Cut all hedging.** "Mostly", "usually", "sometimes" — pick one stance and own it.
+1. **Write full sentences.** When in doubt, write a full sentence. Brevity that sacrifices clarity is the wrong trade.
+2. **Active voice, always.** "The server validates every request" beats "Every request is validated." Name the subject and let it act.
+3. **State the fact.** "12 forms deleted." Not "12 forms have been successfully deleted."
+4. **One specific thing per sentence.** Cut everything else.
+5. **No negation patterns.** Describe what happens, what exists, what the system does. "The pipeline checks every push" beats "Nothing goes unchecked." Frame the positive action.
+6. **No "AI" in the headline.** If your product needs AI in the headline to sell, the headline is doing the wrong job.
+7. **Consistent casing.** Sentence case for headings, lowercase for labels and nav items.
+8. **No exclamation points.** Ever. Including "Welcome!"
+9. **Address one person.** "Your" not "Users'". "You can" not "Teams can".
+10. **Sell outcomes, not features.** "Get answers worth reading" beats "AI-powered surveys with smart probing."
+11. **Cut all hedging.** "Mostly", "usually", "sometimes" — pick one stance and own it.
 
 ## Banned words
 

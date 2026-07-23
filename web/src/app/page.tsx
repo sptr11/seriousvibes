@@ -55,7 +55,9 @@ export default function LandingPage() {
             </Link>
           </Button>
           <Button asChild variant="ghost" size="lg">
-            <Link href="/docs">read the blueprint</Link>
+            <a href="https://github.com/sptr11/seriousvibes/blob/main/BLUEPRINT.md">
+              read the blueprint
+            </a>
           </Button>
         </div>
       </section>

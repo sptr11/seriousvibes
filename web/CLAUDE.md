@@ -16,25 +16,15 @@
 
 ## Layout structure
 
-- `app/layout.tsx` — server component. Loads Geist Sans, Geist Mono, Instrument Serif via `next/font`. Wraps in `<Providers>` (client) which provides Auth + Toaster.
-- `app/page.tsx` — server, marketing landing.
+- `app/layout.tsx` — server component. Loads fonts via `next/font`. Wraps in `<Providers>` (client) which provides Auth + Toaster.
+- `app/page.tsx` — server, public landing.
 - `app/login/page.tsx` — client, signup/signin toggle.
-- `app/dashboard/layout.tsx` — client, sidebar + workspace switcher + user dropdown. Redirects to `/login` if unauthenticated.
-- `app/dashboard/page.tsx` — client, placeholder dashboard.
-- `app/dashboard/settings/page.tsx` — client, profile / workspace / team / api key sections with anchor nav.
+- `app/dashboard/` — client, authenticated area. Redirects to `/login` if unauthenticated.
+- `app/error.tsx`, `app/global-error.tsx`, `app/dashboard/error.tsx` — error boundaries that prevent white-screens.
 
 ## Design tokens
 
-Defined in `src/app/globals.css` as RGB triples (no commas, no `rgb()` wrapper) — Tailwind composes alpha. Names:
-
-- `--color-bg`, `--color-fg`, `--color-rule`, `--color-accent`, `--color-accent-fg`, `--color-muted`, `--color-pos`, `--color-neg`, `--color-card`, `--color-popover`
-- `--radius-1/2/3/pill`
-- `--shadow-xs/sm/md/stamp`
-- `--t-fast/base/slow`, `--ease-out`
-
-Dark mode block is reserved but commented. Tailwind `darkMode` is left at default — don't enable until a real palette ships.
-
-Typography utility classes (`.t-display`, `.t-h1` … `.t-mono`) live in `globals.css` and reference the loaded font CSS variables.
+Defined in `src/app/globals.css` as RGB triples — Tailwind composes alpha. See `docs/DESIGN_SYSTEM.md` for the token workflow. Read `globals.css` for the current token names and values.
 
 ## API base URL
 

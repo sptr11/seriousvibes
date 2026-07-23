@@ -105,9 +105,9 @@ export default function SettingsPage() {
   const invite = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!activeWorkspace) return
-    const res = await authedFetch(`/api/workspaces/${activeWorkspace.id}/invites`, {
+    const res = await authedFetch(`/api/workspaces/${activeWorkspace.id}/members`, {
       method: 'POST',
-      body: JSON.stringify({ email: inviteEmail }),
+      body: JSON.stringify({ email: inviteEmail, role: 'member' }),
     })
     if (res && res.ok) {
       toast.success(`invited ${inviteEmail}`)
