@@ -1,10 +1,8 @@
 # seriousvibes
 
-> A serious starter for vibe coders. Ship engineered products with less churn.
+A Next.js 15 + Hono + Postgres starter for people using AI agents to write their SaaS. Multi-tenant auth, design tokens, a copy guide, and TDD scaffolding are already built, so the first thing your agent generates isn't the tenth thing you have to fix.
 
-**The problem:** AI agents can write 10,000 lines of code in an afternoon. But what they ship — copy that overclaims, schemas you'll rewrite next month, auth that leaks data across tenants, UI that needs a retrofit when you finally adopt a design system, tests written after the bugs ship — looks like a product but costs more to fix than to rebuild.
-
-**The fix:** Start with the decisions that compound. seriousvibes bundles the foundation you'd otherwise discover the hard way: multi-tenant auth, design tokens, copy guides, TDD scaffolding, security-first defaults. Day one looks like day ninety should have.
+Left to itself, an agent will write auth that leaks across tenants, a schema you rewrite next month, copy that overclaims, and tests written after the bugs already shipped — all in code that looks done. Every one of those is cheap to prevent up front and expensive to fix after. This starter bakes the prevention in so day one already looks like day ninety.
 
 ## What's in the box
 
@@ -60,7 +58,3 @@ The cheap ordering — positioning → differentiator → tokens + copy guide �
 ## License
 
 MIT
-
----
-
-Made by someone who shipped the long version.
