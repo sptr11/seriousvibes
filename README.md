@@ -33,11 +33,7 @@ npm run typecheck     # tsc --noEmit everywhere
 
 ## The philosophy
 
-**Sequence matters more than quality.** We've seen projects ship a beautiful design system, then discover it broke the live renderer. Write 40 use cases, then realize none of them mention the differentiator. Build admin tooling before the core product works end-to-end. Each piece was good; the order was expensive.
-
-The cheap ordering — positioning → differentiator → tokens + copy guide → core loop → content — is what this starter encodes.
-
-**Read [`BLUEPRINT.md`](./BLUEPRINT.md) first.** It's the most important file here.
+**Sequence matters more than quality.** Build things in the wrong order and reality eventually corrects you — the fix costs weeks that building in the right order would have cost nothing. [`BLUEPRINT.md`](./BLUEPRINT.md) has the build order and a table of anti-patterns with their real cost. Read it first — it's the most important file here.
 
 ## What's opinionated
 
