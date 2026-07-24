@@ -6,9 +6,9 @@ The build sequence that doesn't create rework.
 
 > Every phase that runs ahead of its dependencies costs you rework equal to (things built) × (things that changed).
 
-When you build content before the differentiator exists, every word becomes wrong when you find it. When you build features before the schema is right, every endpoint becomes a migration when you fix it. When you ship UI before the design system, every component needs a retrofit.
+Build content before the differentiator exists, and every word becomes wrong the moment you find it. The anti-patterns table below has six more, with the real cost of each.
 
-Sequence is cheaper than quality. Quality you can iterate; sequence you cannot un-do.
+Sequence is cheaper than quality. Quality you can iterate; sequence you cannot undo.
 
 ## The cheap ordering
 
@@ -39,7 +39,7 @@ Skip any step and you'll redo work in every step after it.
 
 - Build this *before* anything else, including auth, if you can fake the rest.
 - Test it on a real person. If they don't see the difference, the positioning is wrong — back to Phase 1.
-- A real project shipped 40 use case pages, 7 comparison pages, and a blog before the differentiator existed. Every page had to be rewritten after.
+- A real project shipped 18 use case pages before the differentiator existed. Every page had to be rewritten after — see the anti-patterns table.
 
 ## Phase 3 — Tokens, copy guide, CLAUDE.md
 

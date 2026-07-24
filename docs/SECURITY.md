@@ -35,10 +35,12 @@ After middleware runs, route handlers do:
 ```ts
 const workspace = c.get('workspace')
 const { rows } = await pool.query(
-  'SELECT * FROM forms WHERE id = $1 AND workspace_id = $2',
+  'SELECT * FROM items WHERE id = $1 AND workspace_id = $2',
   [id, workspace.id]
 )
 ```
+
+`items` stands in for whatever table you add — this starter ships no product tables of its own, only `users`, `workspaces`, `memberships`, `refresh_tokens`, and `api_keys`.
 
 **Never** query a workspace-scoped table without `workspace_id` in the WHERE clause. The schema does not enforce this — your code must.
 
