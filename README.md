@@ -8,24 +8,24 @@
 
 ---
 
-seriousvibes gives you a working app (auth, workspaces, API keys, tests) and a `CLAUDE.md` that tells your coding agent the project's rules. Every query is scoped to a workspace, tests come first, styles use design tokens, and UI text follows a copy guide. The existing code already follows these rules, so the agent has correct examples to copy.
+seriousvibes gives you a working app (auth, workspaces, API keys, tests) and an `AGENTS.md` that tells your coding agent the project's rules. Every query is scoped to a workspace, tests come first, styles use design tokens, and UI text follows a copy guide. The existing code already follows these rules, so the agent has correct examples to copy.
 
 ## What's included
 
 | Problem | What's included | Docs |
 |---|---|---|
 | Data leaking between tenants | Middleware resolves the workspace. Every query filters on `workspace_id`. Each route must test the cross-workspace case. | [`SECURITY.md`](docs/SECURITY.md) |
-| Code shipped without tests | TDD is required by `CLAUDE.md`. Vitest calls routes in-process with Hono's `app.request()`, and the suite runs in under a second. | [`TESTING.md`](docs/TESTING.md) |
+| Code shipped without tests | TDD is required by `AGENTS.md`. Vitest calls routes in-process with Hono's `app.request()`, and the suite runs in under a second. | [`TESTING.md`](docs/TESTING.md) |
 | Hardcoded colors | Semantic CSS variables in `globals.css`, mapped into Tailwind classes. | [`DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) |
 | Vague UI copy and error messages | A copy guide with banned words, error message patterns and CTA rules. | [`COPY_GUIDE.md`](docs/COPY_GUIDE.md) |
 | Deploys that fail silently | Migrations run inside API startup and can't block it. `/health` checks both the API and the web process. | [`DEPLOYMENT.md`](docs/DEPLOYMENT.md) |
-| Agents building more than you asked for | A scope rule: build only what the prompt asks for, and write tests if you finish early. | [`CLAUDE.md`](CLAUDE.md) |
+| Agents building more than you asked for | A scope rule: build only what the prompt asks for, and write tests if you finish early. | [`AGENTS.md`](AGENTS.md) |
 
 ## Using it with an agent
 
 1. Fork the repo.
-2. Make sure your agent reads `CLAUDE.md`. Claude Code loads it automatically. For other agents, reference it from their rules file.
-3. Scope each prompt to one feature. `CLAUDE.md` tells the agent to build only what you asked for and to write tests if it finishes early.
+2. Your agent reads the rules from `AGENTS.md`. Codex, Cursor, GitHub Copilot and most other coding agents load it automatically. Claude Code reads `CLAUDE.md`, which imports `AGENTS.md`. If your tool uses a different rules file, point that file at `AGENTS.md`.
+3. Scope each prompt to one feature. `AGENTS.md` tells the agent to build only what you asked for and to write tests if it finishes early.
 
 ## Quickstart
 
@@ -56,9 +56,9 @@ Replace `seriousvibes` with your product name. `grep -rl seriousvibes --exclude-
 
 **Why:** an agent copies whatever text is nearby. Leftover starter copy ends up in your product.
 
-### 2. `CLAUDE.md`
+### 2. `AGENTS.md`
 
-Replace the intro in the root `CLAUDE.md` with one paragraph on what your product does and who uses it. Under "Hard rules", add the rules specific to your domain, for example "amounts are stored in cents" or "every form belongs to a workspace". Keep the per-package files (`api/CLAUDE.md`, `web/CLAUDE.md`) in sync as you add routes and pages.
+Replace the intro in the root `AGENTS.md` with one paragraph on what your product does and who uses it. Under "Hard rules", add the rules specific to your domain, for example "amounts are stored in cents" or "every form belongs to a workspace". Keep the per-package files (`api/AGENTS.md`, `web/AGENTS.md`) in sync as you add routes and pages.
 
 **Why:** this is the only file the agent is guaranteed to read. A rule that isn't written here won't be followed.
 

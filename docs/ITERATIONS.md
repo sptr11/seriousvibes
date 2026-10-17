@@ -12,6 +12,11 @@ Format:
 **Result:** What happened, edge cases found, anything a future session needs to know.
 ```
 
+## 2026-10-17 — AGENTS.md is the rules file; CLAUDE.md imports it
+**What:** Moved the root, `api/` and `web/` `CLAUDE.md` content to `AGENTS.md`. Git records new files, not renames, because `CLAUDE.md` still exists; the old history is under `CLAUDE.md`. Each `CLAUDE.md` is now the single line `@AGENTS.md`. Deleted the root note about a parent-workspace `CLAUDE.md` cascade. README and COPY_GUIDE now point at `AGENTS.md`.
+**Why:** The starter claims "your agent reads the rules first", but `CLAUDE.md` only works out of the box for Claude Code. Codex, Cursor, Copilot and most other agents read `AGENTS.md`. The cascade note described our private `Projects/` setup and meant nothing to outside users.
+**Result:** Checked with a fresh headless `claude -p` session in `api/`: it loaded both the root and `api/` `AGENTS.md` through the imports, plus the `Projects/` principles from the parent directory. So forks inside `Projects/` still get the workspace cascade without the note. Edit `AGENTS.md`, never the `CLAUDE.md` stubs. A symlink was rejected because it breaks on Windows checkouts.
+
 ## 2026-10-17 — BLUEPRINT.md removed
 **What:** Deleted `BLUEPRINT.md`. Its one practical rule (build only what the prompt asks for, write tests if you finish early) is now in the root `CLAUDE.md` under "When in doubt". The README's nav link, table row, agent step 3 and "Not included" pointer no longer reference it. The landing page footer now reads "built with seriousvibes."
 **Why:** It was founder strategy (positioning lock, go-to-market) in a code starter, and it rested on internal anecdotes a public reader can't check. It also contradicted the starter: Phase 2 said to build the differentiator before auth, but auth ships pre-built.

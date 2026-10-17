@@ -2,7 +2,7 @@
 
 The voice for everything user-facing — page copy, error messages, button labels, tooltips.
 
-Customize this file for your product, then reference it from `CLAUDE.md` so AI agents read it before they write.
+Customize this file for your product, then reference it from `AGENTS.md` so AI agents read it before they write.
 
 ## Voice
 
@@ -94,7 +94,7 @@ The AI will produce mush by default. Force it through this guide:
 - Reject any headline without a specific noun.
 - Reject any CTA whose text doesn't describe the action.
 
-This is the single highest-ROI use of `CLAUDE.md` — pointing the AI at this guide before it writes.
+This is the single highest-ROI use of `AGENTS.md` — pointing the AI at this guide before it writes.
 
 ## Quick checklist
 
