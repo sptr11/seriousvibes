@@ -73,7 +73,7 @@ export default function LandingPage() {
 
       <footer className="mt-auto pt-24 t-small text-muted">
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-6">
-          <span>built with the seriousvibes blueprint.</span>
+          <span>built with seriousvibes.</span>
           <Link href="/login" className="hover:text-fg">
             sign in
           </Link>

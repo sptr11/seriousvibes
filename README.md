@@ -4,7 +4,7 @@
 
 <p align="center">A Next.js 15 + Hono + Postgres starter for building multi-tenant SaaS with a coding agent.</p>
 
-<p align="center"><a href="#quickstart">Quickstart</a> · <a href="#whats-included">What's included</a> · <a href="#make-it-yours">Make it yours</a> · <a href="BLUEPRINT.md">Build order</a></p>
+<p align="center"><a href="#quickstart">Quickstart</a> · <a href="#whats-included">What's included</a> · <a href="#make-it-yours">Make it yours</a></p>
 
 ---
 
@@ -19,13 +19,13 @@ seriousvibes gives you a working app (auth, workspaces, API keys, tests) and a `
 | Hardcoded colors | Semantic CSS variables in `globals.css`, mapped into Tailwind classes. | [`DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) |
 | Vague UI copy and error messages | A copy guide with banned words, error message patterns and CTA rules. | [`COPY_GUIDE.md`](docs/COPY_GUIDE.md) |
 | Deploys that fail silently | Migrations run inside API startup and can't block it. `/health` checks both the API and the web process. | [`DEPLOYMENT.md`](docs/DEPLOYMENT.md) |
-| Building features in the wrong order | Six build phases, and what skipping each one costs. | [`BLUEPRINT.md`](BLUEPRINT.md) |
+| Agents building more than you asked for | A scope rule: build only what the prompt asks for, and write tests if you finish early. | [`CLAUDE.md`](CLAUDE.md) |
 
 ## Using it with an agent
 
 1. Fork the repo.
 2. Make sure your agent reads `CLAUDE.md`. Claude Code loads it automatically. For other agents, reference it from their rules file.
-3. Name the current phase from `BLUEPRINT.md` in your prompts, for example: "Phase 4 only. Don't start Phase 5. If you finish early, write tests."
+3. Scope each prompt to one feature. `CLAUDE.md` tells the agent to build only what you asked for and to write tests if it finishes early.
 
 ## Quickstart
 
@@ -98,7 +98,7 @@ Set `JWT_SECRET` to at least 32 random bytes (migrations refuse to run in produc
 - Pricing, billing and usage metering
 - Admin dashboards
 
-`BLUEPRINT.md` explains when to add each one.
+Add them once you have users who need them.
 
 ## Who it's for
 

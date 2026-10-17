@@ -6,7 +6,6 @@ You are working in a project bootstrapped from **seriousvibes**, a starter that 
 
 ## Read these before writing code
 
-- **[`BLUEPRINT.md`](./BLUEPRINT.md)** — the build sequence. Know which phase you're in. Don't skip ahead.
 - **[`docs/SECURITY.md`](./docs/SECURITY.md)** — auth, scoping, input validation, role-gated UI, frontend resilience.
 - **[`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)** — single-service pattern, migration resilience, health endpoint, monitoring, env vars.
 - **[`docs/TESTING.md`](./docs/TESTING.md)** — TDD pattern, vitest setup, e2e flow.
@@ -56,7 +55,6 @@ npm run dev           # api: 3001, web: 3000
 
 ## When in doubt
 
-- Read `BLUEPRINT.md` and figure out the phase.
+- Build only what the prompt asks for. If you finish early, write tests instead of starting the next feature.
 - Read the per-package `CLAUDE.md`.
-- Don't add features the user didn't ask for.
 - Don't write comments that explain *what* the code does. Code does that. Comments are for *why* — non-obvious constraints, workarounds, surprising behavior.
