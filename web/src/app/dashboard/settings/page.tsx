@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { Copy, Plus } from 'lucide-react'
+import { Copy, KeyRound, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -19,6 +19,11 @@ import {
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/lib/use-auth'
+
+interface ApiKeyInfo {
+  prefix: string
+  created_at: string
+}
 
 interface Member {
   id: string
@@ -42,7 +47,9 @@ export default function SettingsPage() {
   const [workspaceHandle, setWorkspaceHandle] = React.useState(activeWorkspace?.handle ?? '')
   const [members, setMembers] = React.useState<Member[]>([])
   const [inviteEmail, setInviteEmail] = React.useState('')
-  const [apiKey, setApiKey] = React.useState<string | null>(null)
+  const [keyInfo, setKeyInfo] = React.useState<ApiKeyInfo | null>(null)
+  // The raw key exists only in this state, right after it's created. The API never returns it again.
+  const [newKey, setNewKey] = React.useState<string | null>(null)
   const [createOpen, setCreateOpen] = React.useState(false)
   const [newWsName, setNewWsName] = React.useState('')
   const [newWsHandle, setNewWsHandle] = React.useState('')
@@ -67,8 +74,9 @@ export default function SettingsPage() {
       }
       const keyRes = await authedFetch(`/api/workspaces/${activeWorkspace.id}/api-key`)
       if (keyRes && keyRes.ok) {
-        const data = (await keyRes.json()) as { key: string }
-        setApiKey(data.key)
+        const data = (await keyRes.json()) as { api_key: ApiKeyInfo | null }
+        setKeyInfo(data.api_key)
+        setNewKey(null)
       }
     })()
   }, [activeWorkspace, authedFetch])
@@ -117,10 +125,30 @@ export default function SettingsPage() {
     }
   }
 
+  const createKey = async () => {
+    if (!activeWorkspace) return
+    if (
+      keyInfo &&
+      !window.confirm(`Replace the api key? ${keyInfo.prefix}… stops working immediately.`)
+    ) {
+      return
+    }
+    const res = await authedFetch(`/api/workspaces/${activeWorkspace.id}/api-key`, {
+      method: 'POST',
+    })
+    if (res && res.ok) {
+      const data = (await res.json()) as { key: string } & ApiKeyInfo
+      setNewKey(data.key)
+      setKeyInfo({ prefix: data.prefix, created_at: data.created_at })
+    } else {
+      toast.error("Couldn't create the key. Only owners and admins can manage api keys.")
+    }
+  }
+
   const copyKey = async () => {
-    if (!apiKey) return
+    if (!newKey) return
     try {
-      await navigator.clipboard.writeText(apiKey)
+      await navigator.clipboard.writeText(newKey)
       toast.success('api key copied')
     } catch {
       toast.error("Couldn't copy — copy it manually.")
@@ -337,18 +365,24 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap items-center gap-3">
-                <code className="t-mono flex-1 rounded-2 border border-rule bg-card px-3 py-2 text-fg">
-                  {apiKey ?? 'no key yet'}
+                <code className="t-mono normal-case tracking-normal flex-1 break-all rounded-2 border border-rule bg-card px-3 py-2 text-fg">
+                  {newKey ?? (keyInfo ? `${keyInfo.prefix}…` : 'no key yet')}
                 </code>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={copyKey}
-                  disabled={!apiKey}
-                >
-                  <Copy className="h-4 w-4" /> copy
-                </Button>
+                {newKey ? (
+                  <Button type="button" variant="outline" onClick={copyKey}>
+                    <Copy className="h-4 w-4" /> copy
+                  </Button>
+                ) : (
+                  <Button type="button" variant="outline" onClick={createKey}>
+                    <KeyRound className="h-4 w-4" /> {keyInfo ? 'replace key' : 'create key'}
+                  </Button>
+                )}
               </div>
+              {newKey && (
+                <p className="t-small mt-3 text-muted">
+                  copy it now. this is the only time the key is shown.
+                </p>
+              )}
             </CardContent>
           </Card>
         </section>

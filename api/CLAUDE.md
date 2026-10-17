@@ -22,7 +22,7 @@
 Two paths through `requireAuth` (`src/middleware/auth.ts`):
 
 - **JWT** (`Authorization: Bearer eyJ...`) — verifies, reads optional `X-Workspace` header (accepts workspace ID or handle), resolves to the user's membership row. Falls back to the user's earliest membership when no header.
-- **API key** (`Authorization: Bearer pk_...`) — single JOIN across `api_keys`, `workspaces`, optional `users`/`memberships` via `created_by`. Workspace is scoped by the key, not by header.
+- **API key** (`Authorization: Bearer pk_...`) — the token is SHA-256 hashed (`auth/api-keys.ts`) and matched on `api_keys.key_hash`; the raw key is never stored. Single JOIN across `api_keys`, `workspaces`, optional `users`/`memberships` via `created_by`. Workspace is scoped by the key, not by header.
 
 After middleware:
 - `c.get('user')`: User row, OR `null` when the API key's `created_by` is null.
@@ -52,7 +52,7 @@ For routes that use `pool.connect()` (signup, workspace create), mock the return
 
 - **Handle validation:** 3–30 chars, lowercase alphanumeric + `-`/`_`, must start with alphanumeric. Reserved: `admin, api, www, root, settings`.
 - **X-Workspace header** accepts either workspace ID or handle.
-- **Signup is transactional** — single `BEGIN/COMMIT` around user + workspace + membership + api key + refresh token inserts.
+- **Signup is transactional** — single `BEGIN/COMMIT` around user + workspace + membership + refresh token inserts. No API key is created here; owners create one from settings (`POST /api/workspaces/:id/api-key`), which returns the raw key once.
 - **`memberships` lookup** is always filtered by `user_id` first. Never resolve a workspace without the membership join.
 - **Migrations** refuse to run in `NODE_ENV=production` with the default `.env.example` `JWT_SECRET`.
 
@@ -67,9 +67,10 @@ src/
   auth/jwt.ts           sign/verify access token (HS256, 1h)
   auth/passwords.ts     bcryptjs hash/verify (cost 10)
   auth/refresh.ts       generate/hash/cookie helpers
+  auth/api-keys.ts      generate/hash API keys (only the hash is stored)
   middleware/auth.ts    requireAuth (JWT + API key paths)
   lib/handle.ts         isValidHandle + reserved list
   lib/logger.ts         structured logger (JSON in prod, readable in dev)
   routes/auth.ts        signup, login, refresh, logout, me, profile update
-  routes/workspaces.ts  CRUD + members + api-key
+  routes/workspaces.ts  CRUD + members + api-key (GET prefix, POST create/replace)
 ```

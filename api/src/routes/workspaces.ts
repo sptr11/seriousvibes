@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { pool } from '../db/client.js'
 import { requireAuth } from '../middleware/auth.js'
 import { isValidHandle } from '../lib/handle.js'
+import { generateApiKey } from '../auth/api-keys.js'
 import type { AppVariables, Role } from '../types.js'
 
 type Env = { Variables: AppVariables }
@@ -90,11 +91,6 @@ workspaces.post('/', async c => {
     await client.query(
       `INSERT INTO memberships (user_id, workspace_id, role) VALUES ($1, $2, 'owner')`,
       [user.id, ws.id],
-    )
-
-    await client.query(
-      `INSERT INTO api_keys (workspace_id, created_by, label) VALUES ($1, $2, 'Default')`,
-      [ws.id, user.id],
     )
 
     await client.query('COMMIT')
@@ -314,12 +310,43 @@ workspaces.get('/:id/api-key', async c => {
   if (!canManage(mem.role)) return c.json({ error: 'Forbidden' }, 403)
 
   const result = (await pool.query(
-    `SELECT key FROM api_keys WHERE workspace_id = $1 ORDER BY created_at ASC LIMIT 1`,
+    `SELECT key_prefix AS prefix, created_at
+     FROM api_keys WHERE workspace_id = $1 ORDER BY created_at ASC LIMIT 1`,
     [mem.workspace_id],
-  )) as unknown as { rows: Array<{ key: string }> }
+  )) as unknown as { rows: Array<{ prefix: string; created_at: string }> }
 
-  const row = result.rows[0]
-  return c.json({ key: row?.key ?? null })
+  return c.json({ api_key: result.rows[0] ?? null })
+})
+
+// POST /api/workspaces/:id/api-key — create or replace; the only time the raw key is returned
+workspaces.post('/:id/api-key', async c => {
+  const user = c.get('user')
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const id = c.req.param('id')
+
+  const memResult = (await pool.query(
+    `SELECT m.role, w.id AS workspace_id
+     FROM memberships m
+     JOIN workspaces w ON w.id = m.workspace_id
+     WHERE m.user_id = $1 AND (w.id = $2 OR w.handle = $2) LIMIT 1`,
+    [user.id, id],
+  )) as unknown as { rows: Array<{ role: Role; workspace_id: string }> }
+
+  const mem = memResult.rows[0]
+  if (!mem) return c.json({ error: 'Workspace not found' }, 404)
+  if (!canManage(mem.role)) return c.json({ error: 'Forbidden' }, 403)
+
+  const { raw, hash, prefix } = generateApiKey()
+  // One statement, so the old key stops working at the same moment the new one starts.
+  const result = (await pool.query(
+    `WITH removed AS (DELETE FROM api_keys WHERE workspace_id = $1)
+     INSERT INTO api_keys (workspace_id, key_hash, key_prefix, created_by)
+     VALUES ($1, $2, $3, $4)
+     RETURNING created_at`,
+    [mem.workspace_id, hash, prefix, user.id],
+  )) as unknown as { rows: Array<{ created_at: string }> }
+
+  return c.json({ key: raw, prefix, created_at: result.rows[0]?.created_at ?? null }, 201)
 })
 
 // DELETE /api/workspaces/:id/members/:user_id

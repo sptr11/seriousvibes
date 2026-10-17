@@ -46,11 +46,31 @@ CREATE INDEX IF NOT EXISTS refresh_tokens_user_id_idx ON refresh_tokens(user_id)
 CREATE TABLE IF NOT EXISTS api_keys (
   id text PRIMARY KEY DEFAULT ('key_' || replace(gen_random_uuid()::text, '-', '')),
   workspace_id text NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
-  key text UNIQUE NOT NULL DEFAULT ('pk_' || replace(gen_random_uuid()::text, '-', '')),
+  key_hash text UNIQUE NOT NULL,
+  key_prefix text NOT NULL,
   label text NOT NULL DEFAULT 'Default',
   created_by text REFERENCES users(id) ON DELETE SET NULL,
   created_at timestamptz NOT NULL DEFAULT NOW()
 );
+
+-- Databases created before keys were hashed have a raw "key" column. Hash it, then drop it.
+ALTER TABLE api_keys ADD COLUMN IF NOT EXISTS key_hash text;
+ALTER TABLE api_keys ADD COLUMN IF NOT EXISTS key_prefix text;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = current_schema() AND table_name = 'api_keys' AND column_name = 'key'
+  ) THEN
+    UPDATE api_keys
+      SET key_hash = encode(digest(key, 'sha256'), 'hex'), key_prefix = left(key, 11)
+      WHERE key_hash IS NULL;
+    ALTER TABLE api_keys DROP COLUMN key;
+    ALTER TABLE api_keys ADD CONSTRAINT api_keys_key_hash_key UNIQUE (key_hash);
+  END IF;
+END $$;
+ALTER TABLE api_keys ALTER COLUMN key_hash SET NOT NULL;
+ALTER TABLE api_keys ALTER COLUMN key_prefix SET NOT NULL;
 
 CREATE INDEX IF NOT EXISTS api_keys_workspace_id_idx ON api_keys(workspace_id);
 `

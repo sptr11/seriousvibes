@@ -15,6 +15,7 @@ vi.mock('../db/client.js', () => {
 
 import { app } from '../index.js'
 import { signAccessToken } from '../auth/jwt.js'
+import { hashApiKey } from '../auth/api-keys.js'
 import * as dbModule from '../db/client.js'
 
 const mockQuery = (dbModule.pool.query as unknown) as ReturnType<typeof vi.fn>
@@ -76,7 +77,6 @@ describe('POST /api/workspaces', () => {
         rows: [{ id: 'w_2', handle: 'team-alpha', name: 'Team Alpha', status: 'active' }],
       }) // insert workspace
       .mockResolvedValueOnce({}) // membership
-      .mockResolvedValueOnce({}) // api key
       .mockResolvedValueOnce({}) // COMMIT
 
     const res = await authedRequest('/api/workspaces', {
@@ -86,6 +86,8 @@ describe('POST /api/workspaces', () => {
     expect(res.status).toBe(201)
     const body = await res.json()
     expect(body.workspace.id).toBe('w_2')
+    const sqls = clientQuery.mock.calls.map(c => String(c[0]))
+    expect(sqls.some(q => /api_keys/.test(q))).toBe(false)
   })
 
   it('rejects duplicate handle (409)', async () => {
@@ -226,11 +228,115 @@ describe('API key auth path', () => {
     expect(res.status).toBe(200)
   })
 
+  it('looks the key up by its hash, never the raw value', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] })
+    await app.request('/api/workspaces', {
+      headers: { Authorization: 'Bearer pk_testkey' },
+    })
+    const [sql, params] = mockQuery.mock.calls[0] as [string, unknown[]]
+    expect(sql).toMatch(/k\.key_hash = \$1/)
+    expect(params).toEqual([hashApiKey('pk_testkey')])
+  })
+
   it('rejects unknown api key (401)', async () => {
     mockQuery.mockResolvedValueOnce({ rows: [] })
     const res = await app.request('/api/workspaces', {
       headers: { Authorization: 'Bearer pk_unknown' },
     })
+    expect(res.status).toBe(401)
+  })
+})
+
+describe('GET /api/workspaces/:id/api-key', () => {
+  it('returns the prefix and creation time, never the key (200)', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [membershipRow()] }) // auth
+      .mockResolvedValueOnce({ rows: [{ role: 'owner', workspace_id: 'w_1' }] }) // membership
+      .mockResolvedValueOnce({ rows: [{ prefix: 'pk_1a2b3c4d', created_at: '2026-10-17T00:00:00Z' }] })
+
+    const res = await authedRequest('/api/workspaces/w_1/api-key')
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body).toEqual({ api_key: { prefix: 'pk_1a2b3c4d', created_at: '2026-10-17T00:00:00Z' } })
+
+    const [sql, params] = mockQuery.mock.calls[2] as [string, unknown[]]
+    expect(sql).toMatch(/key_prefix AS prefix/)
+    expect(sql).toMatch(/workspace_id = \$1/)
+    expect(params).toEqual(['w_1'])
+  })
+
+  it('returns null when the workspace has no key', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [membershipRow()] })
+      .mockResolvedValueOnce({ rows: [{ role: 'owner', workspace_id: 'w_1' }] })
+      .mockResolvedValueOnce({ rows: [] })
+
+    const res = await authedRequest('/api/workspaces/w_1/api-key')
+    expect(await res.json()).toEqual({ api_key: null })
+  })
+
+  it('rejects a member without manage rights (403)', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [membershipRow({ role: 'member' })] })
+      .mockResolvedValueOnce({ rows: [{ role: 'member', workspace_id: 'w_1' }] })
+
+    const res = await authedRequest('/api/workspaces/w_1/api-key')
+    expect(res.status).toBe(403)
+  })
+
+  it('returns 404 for a workspace the user is not in', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [membershipRow()] })
+      .mockResolvedValueOnce({ rows: [] })
+
+    const res = await authedRequest('/api/workspaces/w_other/api-key')
+    expect(res.status).toBe(404)
+    expect(mockQuery).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('POST /api/workspaces/:id/api-key', () => {
+  it('replaces the key and returns the raw value once (201)', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [membershipRow()] }) // auth
+      .mockResolvedValueOnce({ rows: [{ role: 'owner', workspace_id: 'w_1' }] }) // membership
+      .mockResolvedValueOnce({ rows: [{ created_at: '2026-10-17T00:00:00Z' }] }) // replace
+
+    const res = await authedRequest('/api/workspaces/w_1/api-key', { method: 'POST' })
+    expect(res.status).toBe(201)
+    const body = await res.json()
+    expect(body.key).toMatch(/^pk_[0-9a-f]{64}$/)
+    expect(body.prefix).toBe(body.key.slice(0, 11))
+
+    const [sql, params] = mockQuery.mock.calls[2] as [string, unknown[]]
+    expect(sql).toMatch(/DELETE FROM api_keys WHERE workspace_id = \$1/)
+    expect(params).toContain('w_1')
+    expect(params).toContain(hashApiKey(body.key))
+    expect(params).not.toContain(body.key)
+  })
+
+  it('rejects a member without manage rights (403)', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [membershipRow({ role: 'member' })] })
+      .mockResolvedValueOnce({ rows: [{ role: 'member', workspace_id: 'w_1' }] })
+
+    const res = await authedRequest('/api/workspaces/w_1/api-key', { method: 'POST' })
+    expect(res.status).toBe(403)
+    expect(mockQuery).toHaveBeenCalledTimes(2)
+  })
+
+  it('returns 404 for a workspace the user is not in', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [membershipRow()] })
+      .mockResolvedValueOnce({ rows: [] })
+
+    const res = await authedRequest('/api/workspaces/w_other/api-key', { method: 'POST' })
+    expect(res.status).toBe(404)
+    expect(mockQuery).toHaveBeenCalledTimes(2)
+  })
+
+  it('rejects unauthenticated requests (401)', async () => {
+    const res = await app.request('/api/workspaces/w_1/api-key', { method: 'POST' })
     expect(res.status).toBe(401)
   })
 })

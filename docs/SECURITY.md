@@ -12,9 +12,9 @@ Security defaults that ship with seriousvibes, and what you must not break.
 ### Tokens
 - **Access token:** JWT signed with `JWT_SECRET` (HS256), 1 hour TTL. Sent in `Authorization: Bearer <token>`.
 - **Refresh token:** Random opaque string, 7 day TTL, stored in DB. Set as `httpOnly` `Secure` `SameSite=Lax` cookie. Client cannot read it.
-- **API key:** Prefix `pk_` + random. Workspace-scoped. Set in `Authorization: Bearer pk_...`.
+- **API key:** `pk_` + 32 random bytes (hex). Workspace-scoped, one per workspace. Set in `Authorization: Bearer pk_...`. Only the SHA-256 hash and an 11-character display prefix are stored. `POST /api/workspaces/:id/api-key` (owners and admins) creates or replaces the key and is the only response that contains it. A leaked database or backup holds no usable keys.
 
-The auth middleware accepts both JWT and API key paths. A token starting with `pk_` is looked up directly. Anything else is verified as JWT.
+The auth middleware accepts both JWT and API key paths. A token starting with `pk_` is hashed and looked up by `key_hash`. Anything else is verified as JWT.
 
 ### Cookie config
 ```ts

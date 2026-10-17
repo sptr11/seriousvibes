@@ -90,11 +90,6 @@ auth.post('/signup', async c => {
       [userRow.id, wsRow.id],
     )
 
-    await client.query(
-      `INSERT INTO api_keys (workspace_id, created_by, label) VALUES ($1, $2, 'Default')`,
-      [wsRow.id, userRow.id],
-    )
-
     const { raw, hash } = generateRefreshToken()
     const tokenId = `rt_${randomBytes(8).toString('hex')}`
     await client.query(

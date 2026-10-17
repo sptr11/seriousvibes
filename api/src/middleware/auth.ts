@@ -1,6 +1,7 @@
 import type { Context, MiddlewareHandler } from 'hono'
 import { pool } from '../db/client.js'
 import { verifyAccessToken } from '../auth/jwt.js'
+import { hashApiKey } from '../auth/api-keys.js'
 import type { AppVariables, Membership, User, Workspace, Role } from '../types.js'
 
 type Env = { Variables: AppVariables }
@@ -51,9 +52,9 @@ export const requireAuth: MiddlewareHandler<Env> = async (c, next) => {
        JOIN workspaces w ON w.id = k.workspace_id
        LEFT JOIN users u ON u.id = k.created_by
        LEFT JOIN memberships m ON m.workspace_id = w.id AND m.user_id = u.id
-       WHERE k.key = $1
+       WHERE k.key_hash = $1
        LIMIT 1`,
-      [token],
+      [hashApiKey(token)],
     )) as unknown as { rows: ApiKeyRow[] }
 
     const row = result.rows[0]

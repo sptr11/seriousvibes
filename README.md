@@ -4,7 +4,7 @@
 
 <p align="center">A Next.js 15 + Hono + Postgres starter for building multi-tenant SaaS with a coding agent.</p>
 
-<p align="center"><a href="#quickstart">Quickstart</a> · <a href="#whats-included">What's included</a> · <a href="BLUEPRINT.md">Build order</a></p>
+<p align="center"><a href="#quickstart">Quickstart</a> · <a href="#whats-included">What's included</a> · <a href="#make-it-yours">Make it yours</a> · <a href="BLUEPRINT.md">Build order</a></p>
 
 ---
 
@@ -45,6 +45,44 @@ npm test                 # unit tests (vitest)
 npm run test:e2e -w web  # end-to-end tests (playwright)
 npm run typecheck
 ```
+
+## Make it yours
+
+Do these in order, before your agent writes product code. Every file it writes afterwards inherits them.
+
+### 1. Name and placeholder copy
+
+Replace `seriousvibes` with your product name. `grep -rl seriousvibes --exclude-dir=node_modules .` lists every file, including the package names, page metadata in `web/src/app/layout.tsx`, and the landing and login pages. Rewrite the landing page copy in `web/src/app/page.tsx`. It describes this starter, not your product.
+
+**Why:** an agent copies whatever text is nearby. Leftover starter copy ends up in your product.
+
+### 2. `CLAUDE.md`
+
+Replace the intro in the root `CLAUDE.md` with one paragraph on what your product does and who uses it. Under "Hard rules", add the rules specific to your domain, for example "amounts are stored in cents" or "every form belongs to a workspace". Keep the per-package files (`api/CLAUDE.md`, `web/CLAUDE.md`) in sync as you add routes and pages.
+
+**Why:** this is the only file the agent is guaranteed to read. A rule that isn't written here won't be followed.
+
+### 3. Copy guide
+
+In [`docs/COPY_GUIDE.md`](docs/COPY_GUIDE.md), pick three adjectives for your voice and replace the example ones. Add banned words from your own industry. Rewrite the error-message and CTA examples using your product's nouns ("Couldn't send the invoice", not "Couldn't save the form").
+
+**Why:** an agent writes generic copy unless it has concrete examples to match. Examples in your own vocabulary give it a pattern to copy.
+
+### 4. Design tokens
+
+Change the values in `web/src/app/globals.css`: colors (stored as RGB triples), radius, shadows and motion. To change fonts, swap the `next/font/google` imports in `web/src/app/layout.tsx`. Keep the token names; they're semantic (`--color-accent`, not `--color-coral`). Change the values. [`DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) covers adding tokens and component variants.
+
+**Why:** components only reference tokens, so a rebrand is a one-file change. If the agent sees a hex value in JSX, it will add more.
+
+### 5. Tests for every route you add
+
+Each new route file gets a test file next to it (`routes/invoices.ts` → `routes/invoices.test.ts`) with at least four tests: the happy path, invalid input (400), a missing or wrong role (401/403), and a user from another workspace (404). Copy the pattern from [`workspaces.test.ts`](api/src/routes/workspaces.test.ts): mock `pool.query`, call `app.request()`, assert. Write the failing test before the route.
+
+**Why:** the cross-workspace test is the one that catches tenant leaks, and a leak is the bug you can't take back. CI runs `npm test` on every push.
+
+### 6. Production settings
+
+Set `JWT_SECRET` to at least 32 random bytes (migrations refuse to run in production with the default) and `CORS_ORIGIN` to your domain. Point your uptime monitor at `/health`. [`DEPLOYMENT.md`](docs/DEPLOYMENT.md) has the full checklist.
 
 ## Design choices
 

@@ -38,7 +38,7 @@ function jsonReq(path: string, method: string, body: unknown, headers: Record<st
 }
 
 describe('POST /api/auth/signup', () => {
-  it('creates user, workspace, membership, api key, refresh token (201)', async () => {
+  it('creates user, workspace, membership, refresh token and no api key (201)', async () => {
     mockQuery.mockResolvedValueOnce({ rows: [], rowCount: 0 }) // email check
 
     clientQuery
@@ -48,7 +48,6 @@ describe('POST /api/auth/signup', () => {
         rows: [{ id: 'w_1', handle: 'a-1234', name: "A's Workspace", status: 'active' }],
       }) // insert workspace
       .mockResolvedValueOnce({}) // insert membership
-      .mockResolvedValueOnce({}) // insert api key
       .mockResolvedValueOnce({}) // insert refresh token
       .mockResolvedValueOnce({}) // COMMIT
 
@@ -64,6 +63,8 @@ describe('POST /api/auth/signup', () => {
     expect(body.user.id).toBe('u_1')
     expect(body.workspace.id).toBe('w_1')
     expect(res.headers.get('Set-Cookie')).toMatch(/refresh=/)
+    const sqls = clientQuery.mock.calls.map(c => String(c[0]))
+    expect(sqls.some(q => /api_keys/.test(q))).toBe(false)
   })
 
   it('rejects duplicate emails (409)', async () => {
