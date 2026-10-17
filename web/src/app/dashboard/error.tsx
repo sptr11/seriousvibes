@@ -13,7 +13,7 @@ export default function DashboardError({
       <div className="mx-auto max-w-md px-6 text-center">
         <h1 className="mb-2 text-lg font-semibold">This page failed to load</h1>
         <p className="mb-6 t-small text-muted">
-          Something went wrong. Try again or head back to the dashboard.
+          The page hit an error while rendering. Try again or head back to the dashboard.
         </p>
         <div className="flex items-center justify-center gap-3">
           <Button variant="outline" onClick={reset}>

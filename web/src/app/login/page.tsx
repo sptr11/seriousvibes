@@ -58,19 +58,19 @@ export default function LoginPage() {
       <Card variant="stamp">
         <CardHeader>
           <CardTitle className="t-h2">
-            {isSignup ? 'create your account' : 'sign in'}
+            {isSignup ? 'Create your account' : 'Sign in'}
           </CardTitle>
           <CardDescription>
             {isSignup
-              ? 'one email, one password. you can rename later.'
-              : 'use the email you signed up with.'}
+              ? 'One email, one password. You can change your name later.'
+              : 'Use the email you signed up with.'}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             {isSignup ? (
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="name">name</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
                   value={name}
@@ -81,7 +81,7 @@ export default function LoginPage() {
               </div>
             ) : null}
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="email">email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -92,7 +92,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="password">password</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -106,21 +106,21 @@ export default function LoginPage() {
             <Button type="submit" variant="primary" size="lg" disabled={submitting}>
               {submitting
                 ? isSignup
-                  ? 'creating account…'
-                  : 'signing in…'
+                  ? 'Creating account…'
+                  : 'Signing in…'
                 : isSignup
-                  ? 'create account'
-                  : 'sign in'}
+                  ? 'Create account'
+                  : 'Sign in'}
             </Button>
           </form>
           <div className="mt-5 flex items-center justify-between t-small text-muted">
-            <span>{isSignup ? 'already have an account?' : 'new here?'}</span>
+            <span>{isSignup ? 'Already have an account?' : 'New here?'}</span>
             <button
               type="button"
               className="text-fg underline-offset-4 hover:underline"
               onClick={() => setMode(isSignup ? 'signin' : 'signup')}
             >
-              {isSignup ? 'sign in' : 'create one'}
+              {isSignup ? 'Sign in' : 'Create one'}
             </button>
           </div>
         </CardContent>

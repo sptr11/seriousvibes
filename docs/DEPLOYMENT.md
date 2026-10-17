@@ -55,14 +55,16 @@ On the server, `NEXT_PUBLIC_API_BASE_URL=http://localhost:3001`. The browser nev
 
 **Never let a migration failure prevent the API from starting.**
 
-The default pattern — `node migrate.js && node index.js` — is a trap. If `migrate.js` throws (DB connection timeout, transient network error, anything), the `&&` short-circuits and `index.js` never runs. The service appears live (Next.js is up) but the API is dead. Every request returns 500.
+The starter ships migrations as a separate script, `npm run migrate`. It exits 1 on failure, which is what you want locally and in CI. Production needs one of the two fixes below; neither is enabled by default.
 
-Fix 1 — run migrations inside the API startup, not before it:
+The obvious start command, `node migrate.js && node index.js`, is a trap. If `migrate.js` throws (DB connection timeout, transient network error, anything), the `&&` short-circuits and `index.js` never runs. The service appears live (Next.js is up) but the API is dead. Every request returns 500.
+
+Fix 1 — run migrations inside the API startup, not before it. The shipped `migrate.ts` calls `pool.end()` and `process.exit(1)`, so first move the SQL into an exported `runMigrations()` function and import that:
 
 ```ts
 // api/src/index.ts
 if (!isTest) {
-  import('./db/migrate.js')
+  runMigrations()
     .catch(err => {
       log.error('migration failed, starting anyway', { message: err.message })
     })

@@ -8,24 +8,24 @@ Customize this file for your product, then reference it from `AGENTS.md` so AI a
 
 Pick three adjectives. Make them load-bearing.
 
-Example: **specific, direct, fun**.
+Example: **specific, dry, confident**.
 
 - Specific: "Couldn't send the link" beats "Something went wrong."
 - Dry: No exclamation points. No "Awesome!", "Great!", "Woohoo!".
-- Confident: State the fact, don't soften it. "This will delete 12 forms" not "Are you sure you want to delete these forms?"
+- Confident: State the fact, don't soften it. "This will delete 12 invoices" not "Are you sure you want to delete these invoices?"
 
 ## Eleven rules
 
 1. **Write full sentences.** When in doubt, write a full sentence. Brevity that sacrifices clarity is the wrong trade.
 2. **Active voice, always.** "The server validates every request" beats "Every request is validated." Name the subject and let it act.
-3. **State the fact.** "12 forms deleted." Not "12 forms have been successfully deleted."
+3. **State the fact.** "12 invoices deleted." Not "12 invoices have been successfully deleted."
 4. **One specific thing per sentence.** Cut everything else.
 5. **No negation patterns.** Describe what happens, what exists, what the system does. "The pipeline checks every push" beats "Nothing goes unchecked." Frame the positive action.
 6. **No "AI" in the headline.** If your product needs AI in the headline to sell, the headline is doing the wrong job.
-7. **Consistent casing.** Sentence case for headings, lowercase for labels and nav items.
+7. **Sentence case everywhere.** Headings, buttons, labels, nav items and toasts. Capitalize proper nouns and acronyms (API, URL).
 8. **No exclamation points.** Ever. Including "Welcome!"
 9. **Address one person.** "Your" not "Users'". "You can" not "Teams can".
-10. **Sell outcomes, not features.** "Get answers worth reading" beats "AI-powered surveys with smart probing."
+10. **Sell outcomes, not features.** "Get paid on time" beats "AI-powered invoicing with smart reminders."
 11. **Cut all hedging.** "Mostly", "usually", "sometimes" — pick one stance and own it.
 
 ## Banned words
@@ -37,7 +37,7 @@ Example: **specific, direct, fun**.
 | "AI-powered", "AI-assisted" | Buzzword | What the product does for the user |
 | "Intelligent", "Smart" | Empty | What it actually does |
 | "Stakeholders" | Corporate | "The people involved", "your team" |
-| "At scale" | Vague | "with 1000+ submissions a month" |
+| "At scale" | Vague | "with 1,000+ invoices a month" |
 | "Seamlessly" | Filler | Cut it |
 | "Leverage" | Stop | "Use" |
 | "Robust" | Empty | A specific quality |
@@ -62,10 +62,10 @@ The button's text is what happens when you click it.
 
 | Bad | Good |
 |---|---|
-| "Submit" | "Create form" |
+| "Submit" | "Send invoice" |
 | "Save" | "Save changes" (if there are changes) |
 | "Click here" | The thing it does |
-| "Get started" | "Create your first form" |
+| "Get started" | "Create your first invoice" |
 
 If the button does nothing reversible, use a serious verb: "Delete forever", not "Confirm."
 
@@ -73,17 +73,17 @@ If the button does nothing reversible, use a serious verb: "Delete forever", not
 
 The headline names the user's specific problem and your specific answer. In one breath.
 
-- Bad: "The future of forms is here."
-- Better: "Forms that interview your respondents."
+- Bad: "The future of invoicing is here."
+- Better: "Invoices that chase late payments for you."
 - Best: depends on your audience.
 
 If your headline could be on any product's site, it's not your headline.
 
 ## Microcopy
 
-- **Empty states.** Tell the user what to do, with one button. "No forms yet. Create your first." not "You don't have any forms!"
-- **Tooltips.** Explain *why*, not *what*. Hovering "Publish" should reveal "Locks the fields so submissions stay consistent." Not "Publishes the form."
-- **Confirmation dialogs.** Name the thing being changed and the consequence. "Delete `Sprint Retro Q4`? Its 47 responses will be removed."
+- **Empty states.** Tell the user what to do, with one button. "No invoices yet. Create your first." not "You don't have any invoices!"
+- **Tooltips.** Explain *why*, not *what*. Hovering "Send" should reveal "Emails the client a payment link." Not "Sends the invoice."
+- **Confirmation dialogs.** Name the thing being changed and the consequence. "Delete `Acme retainer, March`? Its 3 payment reminders will be cancelled."
 
 ## When using AI to write copy
 

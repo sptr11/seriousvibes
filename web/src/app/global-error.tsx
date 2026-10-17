@@ -12,9 +12,9 @@ export default function GlobalError({
     <html lang="en">
       <body className="flex min-h-dvh items-center justify-center bg-[#faf8f4] text-[#0a0a0a] antialiased">
         <div className="mx-auto max-w-md px-6 text-center">
-          <h1 className="mb-2 text-lg font-semibold">Something broke</h1>
+          <h1 className="mb-2 text-lg font-semibold">The app failed to load</h1>
           <p className="mb-6 text-sm text-[#4a4560]">
-            An unexpected error occurred. Try again or reload the page.
+            The page hit an error while rendering. Try again or reload the page.
           </p>
           <button
             onClick={reset}

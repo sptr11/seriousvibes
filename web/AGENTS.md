@@ -10,7 +10,7 @@
 
 - **Tokens, never raw colors.** Use `bg-bg`, `text-fg`, `border-rule`, `bg-accent`. Never `bg-yellow-300`. Never inline hex.
 - **`<Button>` over `<button>`.** Always import from `@/components/ui/button`. Same for `Input`, `Label`, `Card`, `Badge`, `Dialog`, `DropdownMenu`.
-- **Copy follows `docs/COPY_GUIDE.md`** — specific, dry, lowercase nouns, no banned words, no exclamation points. Re-read before writing user-facing strings.
+- **Copy follows `docs/COPY_GUIDE.md`** — specific, dry, sentence case, no banned words, no exclamation points. Re-read before writing user-facing strings.
 - **Auth via `useAuth()`.** Never raw `fetch` with manual `Authorization` headers in pages. Use `authedFetch()` from `useAuth()` — it handles the token, the workspace header, and the 401 → refresh → retry path.
 - **Server components by default.** Only mark `'use client'` when you actually need state, effects, browser APIs, or context. The landing page is server; everything in `/dashboard` and `/login` is client.
 

@@ -6,16 +6,16 @@ import { Badge } from '@/components/ui/badge'
 
 const tiles = [
   {
-    title: 'design tokens, not hex codes',
-    body: 'one css file controls every color, radius, and shadow. change a token, the whole app moves with it.',
+    title: 'Design tokens, not hex codes',
+    body: 'One CSS file controls every color, radius, and shadow. Change a token and the whole app follows.',
   },
   {
-    title: 'auth that works on day one',
-    body: 'signup, login, refresh cookies, workspace scoping. wired up before you write your first endpoint.',
+    title: 'Auth that works on day one',
+    body: 'Signup, login, refresh cookies and workspace scoping, wired up before you write your first endpoint.',
   },
   {
-    title: 'tests that run in under a second',
-    body: 'vitest with mocked pools, playwright for the one flow you actually care about. tdd is the default.',
+    title: 'Tests that run in under a second',
+    body: 'Vitest with a mocked pool, Playwright for the flows you care about. TDD is the default.',
   },
 ]
 
@@ -28,7 +28,7 @@ export default function LandingPage() {
         </Link>
         <nav className="flex items-center gap-3">
           <Link href="/login" className="t-small text-muted hover:text-fg">
-            sign in
+            Sign in
           </Link>
         </nav>
       </header>
@@ -36,21 +36,21 @@ export default function LandingPage() {
       <section className="mt-20 flex flex-col gap-6 sm:mt-28">
         <div>
           <Badge variant="accent" className="mb-5">
-            a starter for vibe coders
+            A starter for vibe coders
           </Badge>
           <h1 className="t-display max-w-3xl font-medium">
-            ship the thing.{' '}
-            <span className="t-emphasis">skip the rework.</span>
+            Ship the thing.{' '}
+            <span className="t-emphasis">Skip the rework.</span>
           </h1>
         </div>
         <p className="t-body max-w-2xl text-muted">
-          a next.js and hono starter with the boring decisions made: design tokens before
-          components, copy rules before pages, tests before features. no retrofits.
+          A Next.js and Hono starter with the boring decisions made: design tokens before
+          components, copy rules before pages, tests before features.
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <Button asChild variant="primary" size="lg">
             <Link href="/login">
-              start building
+              Start building
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -73,9 +73,9 @@ export default function LandingPage() {
 
       <footer className="mt-auto pt-24 t-small text-muted">
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-6">
-          <span>built with seriousvibes.</span>
+          <span>Built with seriousvibes.</span>
           <Link href="/login" className="hover:text-fg">
-            sign in
+            Sign in
           </Link>
         </div>
       </footer>

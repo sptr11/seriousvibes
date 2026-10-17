@@ -17,8 +17,8 @@ import { useAuth } from '@/lib/use-auth'
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { href: '/dashboard', label: 'dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/settings', label: 'settings', icon: Settings },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -34,7 +34,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (loading || !user) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
-        <span className="t-mono text-muted">loading…</span>
+        <span className="t-mono text-muted">Loading…</span>
       </div>
     )
   }
@@ -123,18 +123,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" side="top" className="w-56">
-                <DropdownMenuLabel>signed in as</DropdownMenuLabel>
+                <DropdownMenuLabel>Signed in as</DropdownMenuLabel>
                 <DropdownMenuItem disabled className="opacity-100">
                   <span className="truncate text-fg">{user.email}</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard/settings">
-                    <Settings className="h-4 w-4" /> settings
+                    <Settings className="h-4 w-4" /> Settings
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => void logout()}>
-                  <LogOut className="h-4 w-4" /> sign out
+                  <LogOut className="h-4 w-4" /> Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -163,18 +163,18 @@ function WorkspaceSwitcher({ workspaces, activeId, onSwitch }: WorkspaceSwitcher
           aria-label="Switch workspace"
         >
           <div className="min-w-0">
-            <div className="t-mono text-muted">workspace</div>
+            <div className="t-mono text-muted">Workspace</div>
             <div className="truncate text-sm font-medium">
-              {active?.name ?? 'no workspace'}
+              {active?.name ?? 'No workspace'}
             </div>
           </div>
           <ChevronsUpDown className="h-4 w-4 text-muted" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-[240px]">
-        <DropdownMenuLabel>workspaces</DropdownMenuLabel>
+        <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
         {workspaces.length === 0 ? (
-          <DropdownMenuItem disabled>no workspaces yet</DropdownMenuItem>
+          <DropdownMenuItem disabled>No workspaces yet</DropdownMenuItem>
         ) : (
           workspaces.map((ws) => (
             <DropdownMenuItem key={ws.id} onSelect={() => onSwitch(ws.id)}>
@@ -191,7 +191,7 @@ function WorkspaceSwitcher({ workspaces, activeId, onSwitch }: WorkspaceSwitcher
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/dashboard/settings#workspace">
-            <Plus className="h-4 w-4" /> create workspace
+            <Plus className="h-4 w-4" /> Create workspace
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

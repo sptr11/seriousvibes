@@ -11,9 +11,9 @@ export default function Error({
   return (
     <div className="flex min-h-dvh items-center justify-center">
       <div className="mx-auto max-w-md px-6 text-center">
-        <h1 className="mb-2 text-lg font-semibold">Something went wrong</h1>
+        <h1 className="mb-2 text-lg font-semibold">This page failed to load</h1>
         <p className="mb-6 t-small text-muted">
-          An unexpected error occurred. Try again or reload the page.
+          The page hit an error while rendering. Try again or reload the page.
         </p>
         <Button variant="outline" onClick={reset}>
           Try again

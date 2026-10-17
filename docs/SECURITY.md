@@ -25,7 +25,7 @@ res.headers.append('Set-Cookie', `refresh=${token}; HttpOnly; Secure; SameSite=L
 
 ## Multi-tenancy
 
-**This is the most-broken thing in vibe-coded SaaS.** Every authenticated query in this project includes `workspace_id = $n`. The middleware resolves it from:
+**A query without a workspace filter shows one customer's data to another.** Every authenticated query in this project includes `workspace_id = $n`. The middleware resolves it from:
 
 1. The JWT user's `X-Workspace` header (validated against memberships).
 2. Falls back to the user's first workspace.

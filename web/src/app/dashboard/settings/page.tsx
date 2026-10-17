@@ -33,10 +33,10 @@ interface Member {
 }
 
 const sections = [
-  { id: 'profile', label: 'profile' },
-  { id: 'workspace', label: 'workspace' },
-  { id: 'team', label: 'team' },
-  { id: 'api-key', label: 'api key' },
+  { id: 'profile', label: 'Profile' },
+  { id: 'workspace', label: 'Workspace' },
+  { id: 'team', label: 'Team' },
+  { id: 'api-key', label: 'API key' },
 ]
 
 export default function SettingsPage() {
@@ -88,7 +88,7 @@ export default function SettingsPage() {
       body: JSON.stringify({ name: profileName, email: profileEmail }),
     })
     if (res && res.ok) {
-      toast.success('profile saved')
+      toast.success('Profile saved.')
       await loadUser()
     } else {
       toast.error("Couldn't save your profile. Try again.")
@@ -103,7 +103,7 @@ export default function SettingsPage() {
       body: JSON.stringify({ name: workspaceName, handle: workspaceHandle }),
     })
     if (res && res.ok) {
-      toast.success('workspace saved')
+      toast.success('Workspace saved.')
       await loadUser()
     } else {
       toast.error("Couldn't save the workspace. Try again.")
@@ -118,10 +118,10 @@ export default function SettingsPage() {
       body: JSON.stringify({ email: inviteEmail, role: 'member' }),
     })
     if (res && res.ok) {
-      toast.success(`invited ${inviteEmail}`)
+      toast.success(`Added ${inviteEmail} to the workspace.`)
       setInviteEmail('')
     } else {
-      toast.error("Couldn't send the invite. Check the email and try again.")
+      toast.error("Couldn't add them. Check the email; they need an account first.")
     }
   }
 
@@ -129,7 +129,7 @@ export default function SettingsPage() {
     if (!activeWorkspace) return
     if (
       keyInfo &&
-      !window.confirm(`Replace the api key? ${keyInfo.prefix}… stops working immediately.`)
+      !window.confirm(`Replace the API key? ${keyInfo.prefix}… stops working immediately.`)
     ) {
       return
     }
@@ -141,7 +141,7 @@ export default function SettingsPage() {
       setNewKey(data.key)
       setKeyInfo({ prefix: data.prefix, created_at: data.created_at })
     } else {
-      toast.error("Couldn't create the key. Only owners and admins can manage api keys.")
+      toast.error("Couldn't create the key. Only owners and admins can manage API keys.")
     }
   }
 
@@ -149,7 +149,7 @@ export default function SettingsPage() {
     if (!newKey) return
     try {
       await navigator.clipboard.writeText(newKey)
-      toast.success('api key copied')
+      toast.success('API key copied.')
     } catch {
       toast.error("Couldn't copy — copy it manually.")
     }
@@ -162,7 +162,7 @@ export default function SettingsPage() {
       body: JSON.stringify({ name: newWsName, handle: newWsHandle }),
     })
     if (res && res.ok) {
-      toast.success(`workspace "${newWsName}" created`)
+      toast.success(`Workspace "${newWsName}" created.`)
       setCreateOpen(false)
       setNewWsName('')
       setNewWsHandle('')
@@ -190,22 +190,22 @@ export default function SettingsPage() {
 
       <div className="flex flex-col gap-10">
         <header>
-          <h1 className="t-h1">settings</h1>
+          <h1 className="t-h1">Settings</h1>
           <p className="t-body mt-1 text-muted">
-            account and workspace controls. changes save when you submit.
+            Account and workspace settings. Changes save when you submit each form.
           </p>
         </header>
 
         <section id="profile">
           <Card variant="flat">
             <CardHeader>
-              <CardTitle className="t-h3">profile</CardTitle>
-              <CardDescription>your name and login email.</CardDescription>
+              <CardTitle className="t-h3">Profile</CardTitle>
+              <CardDescription>Your name and login email.</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={saveProfile} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="profile-name">name</Label>
+                  <Label htmlFor="profile-name">Name</Label>
                   <Input
                     id="profile-name"
                     value={profileName}
@@ -213,7 +213,7 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="profile-email">email</Label>
+                  <Label htmlFor="profile-email">Email</Label>
                   <Input
                     id="profile-email"
                     type="email"
@@ -234,15 +234,15 @@ export default function SettingsPage() {
         <section id="workspace">
           <Card variant="flat">
             <CardHeader>
-              <CardTitle className="t-h3">workspace</CardTitle>
+              <CardTitle className="t-h3">Workspace</CardTitle>
               <CardDescription>
-                the handle appears in urls. names show up in the sidebar.
+                The handle appears in URLs. The name shows in the sidebar.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={saveWorkspace} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="ws-name">name</Label>
+                  <Label htmlFor="ws-name">Name</Label>
                   <Input
                     id="ws-name"
                     value={workspaceName}
@@ -250,7 +250,7 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="ws-handle">handle</Label>
+                  <Label htmlFor="ws-handle">Handle</Label>
                   <Input
                     id="ws-handle"
                     value={workspaceHandle}
@@ -264,19 +264,19 @@ export default function SettingsPage() {
                   <Dialog open={createOpen} onOpenChange={setCreateOpen}>
                     <DialogTrigger asChild>
                       <Button type="button" variant="outline">
-                        <Plus className="h-4 w-4" /> create new workspace
+                        <Plus className="h-4 w-4" /> Create new workspace
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>create a new workspace</DialogTitle>
+                        <DialogTitle>Create a new workspace</DialogTitle>
                         <DialogDescription>
-                          you stay signed in. switch between them from the sidebar.
+                          You stay signed in. Switch between workspaces from the sidebar.
                         </DialogDescription>
                       </DialogHeader>
                       <form onSubmit={createWorkspace} className="flex flex-col gap-4">
                         <div className="flex flex-col gap-1.5">
-                          <Label htmlFor="new-ws-name">name</Label>
+                          <Label htmlFor="new-ws-name">Name</Label>
                           <Input
                             id="new-ws-name"
                             value={newWsName}
@@ -285,7 +285,7 @@ export default function SettingsPage() {
                           />
                         </div>
                         <div className="flex flex-col gap-1.5">
-                          <Label htmlFor="new-ws-handle">handle</Label>
+                          <Label htmlFor="new-ws-handle">Handle</Label>
                           <Input
                             id="new-ws-handle"
                             value={newWsHandle}
@@ -299,10 +299,10 @@ export default function SettingsPage() {
                             variant="ghost"
                             onClick={() => setCreateOpen(false)}
                           >
-                            cancel
+                            Cancel
                           </Button>
                           <Button type="submit" variant="primary">
-                            create workspace
+                            Create workspace
                           </Button>
                         </DialogFooter>
                       </form>
@@ -317,15 +317,15 @@ export default function SettingsPage() {
         <section id="team">
           <Card variant="flat">
             <CardHeader>
-              <CardTitle className="t-h3">team</CardTitle>
+              <CardTitle className="t-h3">Team</CardTitle>
               <CardDescription>
-                people in {activeWorkspace?.name ?? 'this workspace'}.
+                People in {activeWorkspace?.name ?? 'this workspace'}.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="flex flex-col gap-3">
                 {members.length === 0 ? (
-                  <li className="t-small text-muted">no other members yet.</li>
+                  <li className="t-small text-muted">No other members yet.</li>
                 ) : (
                   members.map((m) => (
                     <li key={m.id} className="flex items-center justify-between gap-3">
@@ -345,10 +345,10 @@ export default function SettingsPage() {
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   required
-                  aria-label="Invite email"
+                  aria-label="Member email"
                 />
                 <Button type="submit" variant="primary">
-                  send invite
+                  Add member
                 </Button>
               </form>
             </CardContent>
@@ -358,29 +358,29 @@ export default function SettingsPage() {
         <section id="api-key">
           <Card variant="flat">
             <CardHeader>
-              <CardTitle className="t-h3">api key</CardTitle>
+              <CardTitle className="t-h3">API key</CardTitle>
               <CardDescription>
-                use this for server-to-server requests. treat it like a password.
+                Use this for server-to-server requests. Treat it like a password.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap items-center gap-3">
                 <code className="t-mono normal-case tracking-normal flex-1 break-all rounded-2 border border-rule bg-card px-3 py-2 text-fg">
-                  {newKey ?? (keyInfo ? `${keyInfo.prefix}…` : 'no key yet')}
+                  {newKey ?? (keyInfo ? `${keyInfo.prefix}…` : 'No key yet')}
                 </code>
                 {newKey ? (
                   <Button type="button" variant="outline" onClick={copyKey}>
-                    <Copy className="h-4 w-4" /> copy
+                    <Copy className="h-4 w-4" /> Copy
                   </Button>
                 ) : (
                   <Button type="button" variant="outline" onClick={createKey}>
-                    <KeyRound className="h-4 w-4" /> {keyInfo ? 'replace key' : 'create key'}
+                    <KeyRound className="h-4 w-4" /> {keyInfo ? 'Replace key' : 'Create key'}
                   </Button>
                 )}
               </div>
               {newKey && (
                 <p className="t-small mt-3 text-muted">
-                  copy it now. this is the only time the key is shown.
+                  Copy it now. This is the only time the key is shown.
                 </p>
               )}
             </CardContent>
@@ -389,7 +389,7 @@ export default function SettingsPage() {
 
         <footer className="t-small text-muted">
           <Link href="/dashboard" className="hover:text-fg">
-            ← back to dashboard
+            ← Back to dashboard
           </Link>
         </footer>
       </div>

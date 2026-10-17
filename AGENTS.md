@@ -2,6 +2,17 @@
 
 You are working in a project bootstrapped from **seriousvibes**, a starter that bakes in security, testing, design tokens, and copy conventions so vibe-coded products don't accumulate churn.
 
+## First run (delete this section when done)
+
+If `package.json` still says `"name": "seriousvibes"`, this is the unmodified starter. Before writing product code, offer to run setup. Ask the user for:
+
+- the product name
+- one sentence on what it does and who it's for
+- three adjectives for the voice
+- brand colors (optional)
+
+Then follow "Make it yours" in `README.md`, steps 1–4. Show the user the diff, and delete this section once they approve it.
+
 ## Read these before writing code
 
 - **[`docs/SECURITY.md`](./docs/SECURITY.md)** — auth, scoping, input validation, role-gated UI, frontend resilience.
@@ -25,8 +36,7 @@ Per-package conventions live in `api/AGENTS.md` and `web/AGENTS.md`.
 Before implementing anything beyond a typo fix:
 
 1. **Plan.** What does it do? UI/UX, API calls, edge cases, file list, sequence.
-2. **Issue.** Put the plan in a GitHub issue.
-3. **TDD.** Write failing tests first. Then make them pass.
+2. **TDD.** Write failing tests first. Then make them pass.
 
 "Non-trivial" = new endpoint, new page, schema change, multi-file refactor.
 
@@ -46,6 +56,10 @@ cp .env.example .env  # set DATABASE_URL, JWT_SECRET
 npm run migrate -w api
 npm run dev           # api: 3001, web: 3000
 ```
+
+## README and site stay in sync
+
+If `site/` exists, `README.md` and `site/index.html` describe the same product. When you change a claim, command, step, or feature list in one, change the other in the same commit. README is the source of truth. Every claim on either must be true of the code today; check it before you write it.
 
 ## Session logging
 

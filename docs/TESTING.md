@@ -1,6 +1,6 @@
 # TESTING.md
 
-TDD by default. Tests run in <1 second. No excuses.
+TDD by default. The whole suite runs in under a second.
 
 ## The TDD loop
 
@@ -10,7 +10,7 @@ For every non-trivial change:
 2. **Implement** the minimum code to make it pass.
 3. **Refactor** if the result is ugly. Tests still pass.
 
-If you can't write the test, you don't understand the behavior yet. Go think.
+If you can't write the test, you don't understand the behavior yet.
 
 ## Vitest setup (API)
 
@@ -18,13 +18,13 @@ Tests live next to source (`auth.test.ts` next to `auth.ts`).
 
 ```ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { app } from '../index'
+import { app } from '../index.js'
 
-vi.mock('../db/client', () => ({
+vi.mock('../db/client.js', () => ({
   pool: { query: vi.fn() },
 }))
 
-import { pool } from '../db/client'
+import { pool } from '../db/client.js'
 const mockQuery = pool.query as ReturnType<typeof vi.fn>
 
 beforeEach(() => mockQuery.mockReset())
@@ -125,7 +125,7 @@ npm run typecheck       # tsc --noEmit, also catches stuff tests miss
 
 The `.github/workflows/ci.yml` runs:
 
-1. `npm install`
+1. `npm ci`
 2. `npm run typecheck`
 3. `npm test`
 4. `npm run lint`

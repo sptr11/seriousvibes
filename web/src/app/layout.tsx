@@ -24,9 +24,9 @@ const serif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  title: 'seriousvibes — a starter that doesn\'t accumulate churn',
+  title: 'seriousvibes',
   description:
-    'a next.js and hono starter with tokens, copy rules, and tests baked in. ship the thing, skip the rework.',
+    'A Next.js and Hono starter with design tokens, copy rules and tests already in place.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
