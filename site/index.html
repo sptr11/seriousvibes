@@ -94,6 +94,9 @@
   }
   .stamp { border: 1.5px solid rgb(var(--color-fg)); box-shadow: var(--shadow-stamp); }
 
+  .shot { margin: 8px 0 56px; border: 1.5px solid rgb(var(--color-fg)); border-radius: var(--radius-3); overflow: hidden; box-shadow: var(--shadow-stamp), 0 12px 32px rgb(0 0 0 / 0.08); }
+  .shot img { display: block; width: 100%; height: auto; }
+
   /* how it works */
   .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 14px; align-items: stretch; }
   .flow .arrow { align-self: center; color: rgb(var(--color-muted)); font-size: 1.4rem; }
@@ -181,6 +184,10 @@
       <button class="copy" data-copy="npx degit sptr11/seriousvibes myapp">copy</button>
     </div>
   </div>
+
+  <figure class="shot">
+    <img src="screenshot.png" width="2560" height="1600" alt="The settings page: team members and a newly created API key">
+  </figure>
 
   <section>
     <div class="t-mono muted">how it works</div>

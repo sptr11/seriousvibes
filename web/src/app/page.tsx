@@ -6,14 +6,17 @@ import { Badge } from '@/components/ui/badge'
 
 const tiles = [
   {
+    tag: 'Tokens',
     title: 'Design tokens, not hex codes',
     body: 'One CSS file controls every color, radius, and shadow. Change a token and the whole app follows.',
   },
   {
+    tag: 'Auth',
     title: 'Auth that works on day one',
     body: 'Signup, login, refresh cookies and workspace scoping, wired up before you write your first endpoint.',
   },
   {
+    tag: 'Tests',
     title: 'Tests that run in under a second',
     body: 'Vitest with a mocked pool, Playwright for the flows you care about. TDD is the default.',
   },
@@ -65,7 +68,7 @@ export default function LandingPage() {
               <CardDescription>{tile.body}</CardDescription>
             </CardHeader>
             <CardContent>
-              <span className="t-mono text-muted">{tile.title.split(',')[0]}</span>
+              <span className="t-mono text-muted">{tile.tag}</span>
             </CardContent>
           </Card>
         ))}

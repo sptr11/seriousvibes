@@ -10,6 +10,8 @@
 
 seriousvibes gives you a working app (auth, workspaces, API keys, tests) and an `AGENTS.md` that tells your coding agent the project's rules. Every query is scoped to a workspace, tests come first, styles use design tokens, and UI text follows a copy guide. The existing code already follows these rules, so the agent has correct examples to copy.
 
+![The settings page: team members and a newly created API key](site/screenshot.png)
+
 ## What's included
 
 | Problem | What's included | Docs |

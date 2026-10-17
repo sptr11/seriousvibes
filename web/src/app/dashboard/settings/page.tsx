@@ -223,7 +223,7 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <Button type="submit" variant="primary">
-                    save changes
+                    Save changes
                   </Button>
                 </div>
               </form>
@@ -259,7 +259,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button type="submit" variant="primary">
-                    save changes
+                    Save changes
                   </Button>
                   <Dialog open={createOpen} onOpenChange={setCreateOpen}>
                     <DialogTrigger asChild>
